@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Implementation Services | Project Baseline</title>
+    <meta name="description" content="Production AI systems for small and mid-market businesses. Custom AI agents, workflow automation, fractional CAIO, political campaign AI, and readiness assessments. Built by someone who runs 110+ AI agents daily.">
+    <meta name="keywords" content="AI implementation, AI consulting, workflow automation, AI agents, fractional CAIO, AI readiness assessment, small business AI, political campaign AI, voter outreach automation">
+    <meta property="og:title" content="AI Implementation Services | Project Baseline">
+    <meta property="og:description" content="Production AI systems for small and mid-market businesses. Custom AI agents, workflow automation, fractional CAIO, and readiness assessments.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.project-baseline.com/ai-services">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333333;
+            line-height: 1.7;
+            background: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ========================================
+           TYPOGRAPHY
+           ======================================== */
+        h1, h2, h3, h4 {
+            font-family: 'Bebas Neue', 'Impact', sans-serif;
+            letter-spacing: 0.02em;
+            line-height: 1.1;
+        }
+
+        .section-headline {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            color: #1A1A1A;
+            margin-bottom: 1rem;
+        }
+
+        .section-subheadline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: #555555;
+            max-width: 700px;
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           LAYOUT
+           ======================================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-center {
+            text-align: center;
+        }
+
+        .section-center .section-subheadline {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ========================================
+           BUTTONS
+           ======================================== */
+        .btn {
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.03em;
+            padding: 16px 40px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: #E31B23;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #c8151c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(227, 27, 35, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #E31B23;
+            border: 2px solid #E31B23;
+        }
+
+        .btn-secondary:hover {
+            background: #E31B23;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-white {
+            background: #ffffff;
+            color: #1A1A1A;
+        }
+
+        .btn-white:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.25);
+        }
+
+        .btn-red-outline {
+            background: transparent;
+            color: #E31B23;
+            border: 2px solid #E31B23;
+        }
+
+        .btn-red-outline:hover {
+            background: #E31B23;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-dark {
+            background: #1A1A1A;
+            color: #ffffff;
+            border: 2px solid #E31B23;
+        }
+
+        .btn-dark:hover {
+            background: #E31B23;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(227, 27, 35, 0.3);
+        }
+
+        /* ========================================
+           NAVIGATION BAR
+           ======================================== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 26, 0.97);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 0 24px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-logo .pb-p {
+            color: #E31B23;
+        }
+
+        .nav-logo .pb-b {
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #E31B23;
+        }
+
+        .nav-cta {
+            background: #E31B23;
+            color: #ffffff !important;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 600 !important;
+            opacity: 1 !important;
+        }
+
+        .nav-cta:hover {
+            background: #c8151c;
+        }
+
+        .nav-mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .nav-mobile-toggle span {
+            width: 24px;
+            height: 2px;
+            background: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        /* ========================================
+           SECTION 1: HERO
+           ======================================== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #1A1A1A 0%, #0a0a0a 60%, #222222 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(227, 27, 35, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(227, 27, 35, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 120px 0 80px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #E31B23;
+            background: rgba(227, 27, 35, 0.1);
+            border: 1px solid rgba(227, 27, 35, 0.3);
+            padding: 8px 20px;
+            border-radius: 30px;
+            margin-bottom: 32px;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            color: #ffffff;
+            margin-bottom: 24px;
+            line-height: 1.05;
+        }
+
+        .hero h1 .accent {
+            color: #E31B23;
+        }
+
+        .hero-sub {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.75);
+            max-width: 620px;
+            line-height: 1.8;
+            margin-bottom: 48px;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .hero-supporting {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 20px;
+        }
+
+        .hero-metrics {
+            display: flex;
+            gap: 48px;
+            margin-top: 64px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-metric-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            color: #E31B23;
+            line-height: 1;
+        }
+
+        .hero-metric-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 6px;
+        }
+
+        /* ========================================
+           SECTION 2: PROBLEM STATEMENT
+           ======================================== */
+        .problem {
+            background: #F5F5F5;
+        }
+
+        .problem-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .problem-left .section-headline {
+            margin-bottom: 32px;
+        }
+
+        .problem-text p {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            color: #555555;
+        }
+
+        .problem-text p:last-child {
+            color: #1A1A1A;
+            font-weight: 600;
+        }
+
+        .problem-visual {
+            position: relative;
+        }
+
+        .problem-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #E31B23, #1A1A1A);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .problem-stat {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .problem-stat:last-child {
+            border-bottom: none;
+        }
+
+        .problem-stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .problem-stat-icon.red {
+            background: rgba(227, 27, 35, 0.1);
+            color: #E31B23;
+        }
+
+        .problem-stat-icon.amber {
+            background: rgba(227, 27, 35, 0.06);
+            color: #B0B0B0;
+        }
+
+        .problem-stat-icon.green {
+            background: rgba(26, 26, 26, 0.08);
+            color: #1A1A1A;
+        }
+
+        .problem-stat-text {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .problem-stat-text strong {
+            color: #1A1A1A;
+        }
+
+        /* ========================================
+           SECTION 3: SERVICES GRID
+           ======================================== */
+        .services {
+            background: #ffffff;
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .services-header .section-subheadline {
+            margin: 12px auto 0;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-bottom: 28px;
+        }
+
+        .services-grid-bottom {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .service-card {
+            background: #ffffff;
+            border: 1px solid #e8e8e8;
+            border-left: 4px solid #E31B23;
+            border-radius: 12px;
+            padding: 40px 32px;
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #E31B23;
+            transform: scaleX(0);
+            transition: transform 0.35s ease;
+        }
+
+        .service-card:hover {
+            border-color: #E31B23;
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(227, 27, 35, 0.1);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card.featured {
+            background: #1A1A1A;
+            border-color: #1A1A1A;
+            border-left: 4px solid #E31B23;
+        }
+
+        .service-card.featured:hover {
+            border-color: #E31B23;
+            box-shadow: 0 20px 50px rgba(26, 26, 26, 0.3);
+        }
+
+        .service-card.featured::before {
+            background: #E31B23;
+        }
+
+        .service-card.featured .service-title,
+        .service-card.featured .service-price,
+        .service-card.featured .service-desc,
+        .service-card.featured .service-list li {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .service-card.featured .service-title {
+            color: #ffffff;
+        }
+
+        .service-card.featured .service-price {
+            color: #E31B23;
+        }
+
+        .service-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: rgba(227, 27, 35, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            color: #E31B23;
+        }
+
+        .service-card.featured .service-icon {
+            background: rgba(227, 27, 35, 0.15);
+            color: #E31B23;
+        }
+
+        .service-price {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            color: #E31B23;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        .service-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 16px;
+        }
+
+        .service-desc {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .service-list {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .service-list li {
+            position: relative;
+            padding-left: 24px;
+            font-size: 0.88rem;
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .service-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 7px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E31B23;
+        }
+
+        .service-card.featured .service-list li::before {
+            background: #E31B23;
+        }
+
+        /* ========================================
+           SECTION: POLITICAL CAMPAIGNS
+           ======================================== */
+        .political {
+            background: #1A1A1A;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .political::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #E31B23, transparent);
+        }
+
+        .political::after {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            right: -150px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(227, 27, 35, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .political-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .political-left {
+            position: relative;
+            z-index: 2;
+        }
+
+        .political-badge {
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #E31B23;
+            background: rgba(227, 27, 35, 0.12);
+            border: 1px solid rgba(227, 27, 35, 0.3);
+            padding: 6px 16px;
+            border-radius: 30px;
+            margin-bottom: 24px;
+        }
+
+        .political-left .section-headline {
+            color: #ffffff;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            margin-bottom: 20px;
+        }
+
+        .political-quote {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 32px;
+            padding-left: 20px;
+            border-left: 3px solid #E31B23;
+        }
+
+        .political-text {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.65);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .political-creds {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+
+        .political-cred-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .political-cred-item::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #E31B23;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .political-cred-item strong {
+            color: #ffffff;
+        }
+
+        .political-right {
+            position: relative;
+            z-index: 2;
+        }
+
+        .political-services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .political-service-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 3px solid #E31B23;
+            border-radius: 10px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .political-service-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(227, 27, 35, 0.4);
+            border-left-color: #E31B23;
+        }
+
+        .political-service-card h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .political-service-card p {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           SECTION 4: CREDIBILITY
+           ======================================== */
+        .credibility {
+            background: #1A1A1A;
+            color: #ffffff;
+        }
+
+        .cred-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .cred-header .section-headline {
+            color: #ffffff;
+        }
+
+        .cred-header .section-subheadline {
+            color: rgba(255, 255, 255, 0.65);
+            margin: 12px auto 0;
+        }
+
+        .cred-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 56px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+        }
+
+        .cred-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 56px;
+        }
+
+        .cred-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 36px;
+            transition: all 0.3s ease;
+        }
+
+        .cred-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(227, 27, 35, 0.3);
+        }
+
+        .cred-card-tenure {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            color: #E31B23;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .cred-card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .cred-card-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.7;
+        }
+
+        .cred-systems {
+            margin-bottom: 40px;
+        }
+
+        .cred-systems h3 {
+            font-size: 1.8rem;
+            color: #E31B23;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .cred-systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .cred-system-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            background: rgba(227, 27, 35, 0.06);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .cred-system-item::before {
+            content: '\2713';
+            color: #E31B23;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .cred-footer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            padding-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ========================================
+           SECTION 5: HOW IT WORKS
+           ======================================== */
+        .how-it-works {
+            background: #F5F5F5;
+        }
+
+        .how-header {
+            text-align: center;
+            margin-bottom: 72px;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            position: relative;
+            margin-bottom: 64px;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 16%;
+            right: 16%;
+            height: 2px;
+            background: linear-gradient(90deg, #E31B23, #1A1A1A, #E31B23);
+            opacity: 0.3;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #E31B23;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 28px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover .step-number {
+            background: #E31B23;
+            transform: scale(1.08);
+        }
+
+        .step:hover .step-num-text {
+            color: #ffffff;
+        }
+
+        .step-num-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            color: #E31B23;
+            line-height: 1;
+            transition: color 0.3s ease;
+        }
+
+        .step-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 16px;
+        }
+
+        .step-desc {
+            font-size: 0.92rem;
+            color: #666;
+            line-height: 1.7;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .how-cta {
+            text-align: center;
+        }
+
+        /* ========================================
+           SECTION 6: FAQ
+           ======================================== */
+        .faq {
+            background: #ffffff;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 0;
+            cursor: pointer;
+            gap: 20px;
+            user-select: none;
+        }
+
+        .faq-question h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1A1A1A;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover h4 {
+            color: #E31B23;
+        }
+
+        .faq-toggle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .faq-toggle::before,
+        .faq-toggle::after {
+            content: '';
+            position: absolute;
+            background: #1A1A1A;
+            transition: all 0.3s ease;
+        }
+
+        .faq-toggle::before {
+            width: 12px;
+            height: 2px;
+        }
+
+        .faq-toggle::after {
+            width: 2px;
+            height: 12px;
+        }
+
+        .faq-item.active .faq-toggle {
+            border-color: #E31B23;
+            background: #E31B23;
+        }
+
+        .faq-item.active .faq-toggle::before {
+            background: #ffffff;
+        }
+
+        .faq-item.active .faq-toggle::after {
+            height: 0;
+            background: #ffffff;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 400px;
+            padding-bottom: 28px;
+        }
+
+        .faq-answer p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* ========================================
+           SECTION 7: FINAL CTA
+           ======================================== */
+        .final-cta {
+            background: linear-gradient(135deg, #1A1A1A 0%, #0a0a0a 100%);
+            text-align: center;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #E31B23, transparent);
+        }
+
+        .final-cta::after {
+            content: '';
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(227, 27, 35, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .final-cta .section-headline {
+            color: #ffffff;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .final-cta-sub {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.65);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            line-height: 1.8;
+            position: relative;
+            z-index: 2;
+        }
+
+        .final-cta .btn {
+            position: relative;
+            z-index: 2;
+        }
+
+        .final-cta-email {
+            margin-top: 28px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.45);
+            position: relative;
+            z-index: 2;
+        }
+
+        .final-cta-email a {
+            color: #E31B23;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .final-cta-email a:hover {
+            color: #ff3a42;
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .footer {
+            background: #0a0a0a;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.05em;
+        }
+
+        .footer-logo span {
+            color: #E31B23;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 1024px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .services-grid-bottom {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cred-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .political-services-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 72px 0;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: #1A1A1A;
+                flex-direction: column;
+                padding: 24px;
+                gap: 16px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-mobile-toggle {
+                display: flex;
+            }
+
+            .hero-content {
+                padding: 100px 0 60px;
+            }
+
+            .hero h1 {
+                font-size: clamp(2.4rem, 8vw, 3.5rem);
+            }
+
+            .hero-metrics {
+                gap: 32px;
+                flex-wrap: wrap;
+            }
+
+            .problem-layout {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid-bottom {
+                grid-template-columns: 1fr;
+            }
+
+            .cred-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-container {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            .steps-container::before {
+                display: none;
+            }
+
+            .political-layout {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            .political-services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero-cta-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn {
+                padding: 14px 32px;
+                font-size: 0.9rem;
+            }
+
+            .hero-metrics {
+                gap: 24px;
+            }
+
+            .hero-metric-number {
+                font-size: 2.2rem;
+            }
+
+            .service-card {
+                padding: 32px 24px;
+            }
+        }
+
+        /* ========================================
+           ANIMATIONS
+           ======================================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in-delay-1 { transition-delay: 0.1s; }
+        .fade-in-delay-2 { transition-delay: 0.2s; }
+        .fade-in-delay-3 { transition-delay: 0.3s; }
+        .fade-in-delay-4 { transition-delay: 0.4s; }
+        .fade-in-delay-5 { transition-delay: 0.5s; }
+    </style>
+</head>
+<body>
+
+    <!-- ======== NAVIGATION ======== -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo"><span class="pb-p">P</span><span class="pb-b">B</span> &middot; Project Baseline</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#political">Campaigns</a></li>
+                <li><a href="#credibility">About</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact" class="nav-cta">Book a Call</a></li>
+            </ul>
+            <div class="nav-mobile-toggle" id="navToggle" onclick="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ======== SECTION 1: HERO ======== -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">AI Implementation Services</div>
+                <h1>AI That <span class="accent">Actually Works</span> for Your Business</h1>
+                <p class="hero-sub">Not a demo. Not a pitch deck. Production AI systems built by someone who runs them across six ventures every single day.</p>
+                <div class="hero-cta-group">
+                    <a href="#contact" class="btn btn-primary">Book a Discovery Call</a>
+                    <a href="#services" class="btn btn-dark">View Services</a>
+                </div>
+                <p class="hero-supporting">Free 30-minute conversation. No pitch, just clarity on what AI can do for your operation.</p>
+                <div class="hero-metrics">
+                    <div>
+                        <div class="hero-metric-number">110+</div>
+                        <div class="hero-metric-label">Production AI Agents</div>
+                    </div>
+                    <div>
+                        <div class="hero-metric-number">6</div>
+                        <div class="hero-metric-label">Active Ventures</div>
+                    </div>
+                    <div>
+                        <div class="hero-metric-number">20+</div>
+                        <div class="hero-metric-label">Years Experience</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== SECTION 2: PROBLEM STATEMENT ======== -->
+    <section class="section problem" id="problem">
+        <div class="container">
+            <div class="problem-layout">
+                <div class="problem-left fade-in">
+                    <h2 class="section-headline">Most Companies Are Stuck in One of Two Places</h2>
+                    <div class="problem-text">
+                        <p>You either haven't started with AI and the noise is overwhelming, or you've tried a few things and nothing stuck.</p>
+                        <p>Maybe your team signed up for ChatGPT and wrote a few emails with it. Maybe someone built a chatbot that nobody uses. Maybe a consultant handed you a "strategy deck" full of buzzwords and no implementation plan.</p>
+                        <p>Meanwhile, your competitors are quietly automating the work that's eating your team's time. They're not talking about AI on LinkedIn. They're using it to move faster than you.</p>
+                        <p>The gap between companies that talk about AI and companies that actually use it is growing every month.</p>
+                        <p>That's the difference with Project Baseline. We build it, we deploy it, and it runs.</p>
+                    </div>
+                </div>
+                <div class="problem-visual fade-in fade-in-delay-2">
+                    <div class="problem-card">
+                        <div class="problem-stat">
+                            <div class="problem-stat-icon red">&#x2717;</div>
+                            <div class="problem-stat-text"><strong>"We bought ChatGPT licenses"</strong> but nobody changed how they actually work</div>
+                        </div>
+                        <div class="problem-stat">
+                            <div class="problem-stat-icon amber">&#x26A0;</div>
+                            <div class="problem-stat-text"><strong>"We hired a consultant"</strong> who delivered a deck and disappeared</div>
+                        </div>
+                        <div class="problem-stat">
+                            <div class="problem-stat-icon amber">&#x26A0;</div>
+                            <div class="problem-stat-text"><strong>"We built a chatbot"</strong> that nobody on the team actually uses</div>
+                        </div>
+                        <div class="problem-stat">
+                            <div class="problem-stat-icon green">&#x2713;</div>
+                            <div class="problem-stat-text"><strong>"We need production systems"</strong> that run reliably without hand-holding</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== SECTION 3: SERVICES GRID ======== -->
+    <section class="section services" id="services">
+        <div class="container">
+            <div class="services-header fade-in">
+                <h2 class="section-headline">What We Build</h2>
+                <p class="section-subheadline">Six service offerings. Each one designed to move your business forward, not just impress your board.</p>
+            </div>
+
+            <!-- Top row: 3 cards -->
+            <div class="services-grid">
+                <!-- Card 1: AI Agent Development -->
+                <div class="service-card featured fade-in fade-in-delay-1">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <div class="service-price">Starting at $15,000</div>
+                    <div class="service-title">AI Agent Development</div>
+                    <p class="service-desc">Custom AI agents that handle real business operations. Not chatbots. Not demos. Production systems that replace manual workflows, make decisions based on your data, and run reliably every day.</p>
+                    <ul class="service-list">
+                        <li>Custom-built AI agents for your specific workflows</li>
+                        <li>Full integration with existing tools (Slack, Monday.com, Salesforce, HubSpot, Google Workspace)</li>
+                        <li>Production deployment with monitoring</li>
+                        <li>30 days of post-launch support</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-red-outline">Learn More</a>
+                </div>
+
+                <!-- Card 2: Workflow Automation -->
+                <div class="service-card fade-in fade-in-delay-2">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+                    </div>
+                    <div class="service-price">Starting at $10,000</div>
+                    <div class="service-title">Workflow Automation</div>
+                    <p class="service-desc">Your team spends hours every week on tasks that should take minutes. Data entry, status updates, report generation, file routing, approval chains. All of it can be automated.</p>
+                    <ul class="service-list">
+                        <li>Audit of current workflows and automation opportunities</li>
+                        <li>Custom automation builds across your tool stack</li>
+                        <li>Direct API integrations where off-the-shelf falls short</li>
+                        <li>Training for your team to manage and extend</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary">Learn More</a>
+                </div>
+
+                <!-- Card 3: Fractional CAIO -->
+                <div class="service-card fade-in fade-in-delay-3">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="service-price">$5,000 - $8,000/month</div>
+                    <div class="service-title">Fractional Chief AI Officer</div>
+                    <p class="service-desc">You need AI leadership, but you don't need a full-time hire at $250K+ per year. A fractional CAIO gives you strategic direction and hands-on implementation in the same engagement.</p>
+                    <ul class="service-list">
+                        <li>AI strategy roadmap aligned with business goals</li>
+                        <li>Hands-on implementation (not just advice)</li>
+                        <li>Weekly strategy and progress sessions</li>
+                        <li>Vendor evaluation and team training</li>
+                        <li>Monthly reporting on ROI and adoption</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Bottom row: 3 cards -->
+            <div class="services-grid-bottom">
+                <!-- Card 4: AI Readiness Assessment -->
+                <div class="service-card fade-in fade-in-delay-4">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    </div>
+                    <div class="service-price">$3,500 flat fee</div>
+                    <div class="service-title">AI Readiness Assessment</div>
+                    <p class="service-desc">A two-week engagement that tells you exactly where you stand, where you should be headed, and what to build first. No fluff. No 80-page report that sits on a shelf.</p>
+                    <ul class="service-list">
+                        <li>Current-state analysis of operations, tools, and data</li>
+                        <li>AI opportunity identification (ranked by impact)</li>
+                        <li>Prioritized implementation roadmap</li>
+                        <li>Cost estimates and ROI projections</li>
+                        <li>Executive summary your team can act on immediately</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary">Get Started</a>
+                </div>
+
+                <!-- Card 5: Brand Architecture Sprint -->
+                <div class="service-card fade-in fade-in-delay-5">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                    <div class="service-price">$3,500 flat fee</div>
+                    <div class="service-title">Brand Architecture Sprint</div>
+                    <p class="service-desc">A complete brand system built in two weeks. Voice, visual identity, messaging framework, and content strategy, all grounded in who you actually are and what your market needs to hear.</p>
+                    <ul class="service-list">
+                        <li>Brand voice and tone guide</li>
+                        <li>Visual identity direction (colors, typography, imagery)</li>
+                        <li>Messaging framework with value propositions</li>
+                        <li>Content strategy with 90-day editorial calendar</li>
+                        <li>Competitive positioning analysis</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary">Get Started</a>
+                </div>
+
+                <!-- Card 6: Political Campaign AI -->
+                <div class="service-card featured fade-in fade-in-delay-1">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                    </div>
+                    <div class="service-price">Starting at $7,500</div>
+                    <div class="service-title">Political Campaign AI</div>
+                    <p class="service-desc">AI-powered systems for modern campaigns. Voter outreach automation, content pipelines, donor engagement, and digital strategy built by someone with two decades in political operations.</p>
+                    <ul class="service-list">
+                        <li>Automated voter outreach and engagement systems</li>
+                        <li>Campaign content generation pipelines</li>
+                        <li>Donor communication and re-engagement automation</li>
+                        <li>Digital strategy and social media infrastructure</li>
+                    </ul>
+                    <a href="#political" class="btn btn-red-outline">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== SECTION: POLITICAL CAMPAIGNS ======== -->
+    <section class="section political" id="political">
+        <div class="container">
+            <div class="political-layout">
+                <div class="political-left fade-in">
+                    <div class="political-badge">Political Campaign Vertical</div>
+                    <h2 class="section-headline">AI for Campaigns That Win</h2>
+                    <p class="political-quote">"I've been in political operations for two decades. Now I build the AI systems that make campaigns run smarter."</p>
+                    <p class="political-text">Most political campaigns still run on spreadsheets, mass emails that nobody opens, and volunteer coordination that falls apart after week two. The campaigns that win are the ones that automate the grind so their people can focus on what matters: connecting with voters.</p>
+                    <div class="political-creds">
+                        <div class="political-cred-item"><strong>Interim Executive Director</strong> of the Committee to Elect Illinois Democratic Candidates (CEIDC)</div>
+                        <div class="political-cred-item"><strong>18 years</strong> running The Hip Hop Democrat, the longest-running digital platform for hip-hop and politics</div>
+                        <div class="political-cred-item"><strong>13 years</strong> with Rainbow PUSH Coalition / Rev. Jesse Jackson</div>
+                        <div class="political-cred-item"><strong>FEC database access</strong> with 1,800+ candidate records for targeted outreach</div>
+                    </div>
+                    <a href="#contact" class="btn btn-primary">Discuss Your Campaign</a>
+                </div>
+                <div class="political-right fade-in fade-in-delay-2">
+                    <div class="political-services-grid">
+                        <div class="political-service-card">
+                            <h4>Voter Outreach Automation</h4>
+                            <p>AI-driven messaging sequences that adapt based on engagement, demographics, and district-level data. Multi-channel: email, SMS, social.</p>
+                        </div>
+                        <div class="political-service-card">
+                            <h4>Campaign Content Pipelines</h4>
+                            <p>Automated content generation for press releases, social posts, newsletter updates, and rapid response. Consistent voice, fast turnaround.</p>
+                        </div>
+                        <div class="political-service-card">
+                            <h4>Donor Engagement Systems</h4>
+                            <p>Intelligent donor segmentation, re-engagement sequences, and contribution tracking. Turn one-time donors into recurring supporters.</p>
+                        </div>
+                        <div class="political-service-card">
+                            <h4>Digital Strategy Infrastructure</h4>
+                            <p>Social media automation, analytics dashboards, volunteer coordination systems, and event management. Everything connected, nothing falling through cracks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== SECTION 4: CREDIBILITY ======== -->
+    <section class="section credibility" id="credibility">
+        <div class="container">
+            <div class="cred-header fade-in">
+                <h2 class="section-headline">Built by Someone Who Uses This Every Day</h2>
+            </div>
+
+            <p class="cred-intro fade-in">Project Baseline is led by Todd Walton, a builder with 20+ years of experience across entertainment, politics, corporate innovation, nonprofits, and technology. Todd doesn't just consult on AI. He builds and operates AI systems across six active ventures, every single day.</p>
+
+            <div class="cred-grid">
+                <div class="cred-card fade-in fade-in-delay-1">
+                    <div class="cred-card-tenure">Current, Full-Time</div>
+                    <div class="cred-card-title">The Desire Company</div>
+                    <p class="cred-card-desc">Director of Experts managing a community of approximately 2,200 professionals and roughly 200 brand projects per year for companies like Best Buy, Sony, HP, and Unilever. Built the operational infrastructure that keeps it running.</p>
+                </div>
+                <div class="cred-card fade-in fade-in-delay-2">
+                    <div class="cred-card-tenure">9 Years</div>
+                    <div class="cred-card-title">Dr. Mae Jemison / The Jemison Group</div>
+                    <p class="cred-card-desc">Nearly a decade supporting the vision of Dr. Mae Jemison, the first woman of color in space, across strategic initiatives and operational development.</p>
+                </div>
+                <div class="cred-card fade-in fade-in-delay-3">
+                    <div class="cred-card-tenure">13 Years</div>
+                    <div class="cred-card-title">Rainbow PUSH Coalition / Rev. Jesse Jackson</div>
+                    <p class="cred-card-desc">Thirteen years of service alongside one of America's most important civil rights organizations, building operational systems and strategic infrastructure.</p>
+                </div>
+                <div class="cred-card fade-in fade-in-delay-4">
+                    <div class="cred-card-tenure">18 Years, Founder</div>
+                    <div class="cred-card-title">The Hip Hop Democrat</div>
+                    <p class="cred-card-desc">The longest-running digital media platform for hip-hop and politics. Built, owned, and operated since 2008.</p>
+                </div>
+            </div>
+
+            <div class="cred-systems fade-in">
+                <h3>Production Systems Built (Not Theoretical)</h3>
+                <div class="cred-systems-grid">
+                    <div class="cred-system-item">Automated Monday.com project kickoff engines</div>
+                    <div class="cred-system-item">AI-powered daily intelligence briefings</div>
+                    <div class="cred-system-item">Multi-platform content pipelines</div>
+                    <div class="cred-system-item">CRM integrations across Slack, Monday.com, Streak</div>
+                    <div class="cred-system-item">Automated document generation and SOW systems</div>
+                    <div class="cred-system-item">AI shopping assistant with computer vision</div>
+                    <div class="cred-system-item">Full n8n and Cloudflare Worker automation stacks</div>
+                    <div class="cred-system-item">Political candidate outreach and FEC data systems</div>
+                </div>
+            </div>
+
+            <p class="cred-footer fade-in">Project Baseline is a Colorado corporation, incorporated in 2009. This isn't a side project. It's a real business with real infrastructure behind it.</p>
+        </div>
+    </section>
+
+    <!-- ======== SECTION 5: HOW IT WORKS ======== -->
+    <section class="section how-it-works" id="process">
+        <div class="container">
+            <div class="how-header fade-in">
+                <h2 class="section-headline">Three Steps. No Surprises.</h2>
+            </div>
+
+            <div class="steps-container">
+                <div class="step fade-in fade-in-delay-1">
+                    <div class="step-number">
+                        <span class="step-num-text">1</span>
+                    </div>
+                    <div class="step-title">Discovery Call</div>
+                    <p class="step-desc">A free 30-minute conversation where we learn about your business, your challenges, and what you've already tried. No sales pitch. We'll tell you honestly whether AI is the right move for your situation.</p>
+                </div>
+                <div class="step fade-in fade-in-delay-2">
+                    <div class="step-number">
+                        <span class="step-num-text">2</span>
+                    </div>
+                    <div class="step-title">Proposal</div>
+                    <p class="step-desc">Within one week, you receive a clear proposal with scope, timeline, deliverables, and pricing. Everything spelled out. No hidden fees, no scope creep, no vague "it depends" language.</p>
+                </div>
+                <div class="step fade-in fade-in-delay-3">
+                    <div class="step-number">
+                        <span class="step-num-text">3</span>
+                    </div>
+                    <div class="step-title">Build and Deploy</div>
+                    <p class="step-desc">We build it, test it, deploy it, and make sure it runs. You get documentation, training, and post-launch support. When we're done, you own everything. No lock-in, no recurring dependency.</p>
+                </div>
+            </div>
+
+            <div class="how-cta fade-in">
+                <a href="#contact" class="btn btn-primary">Book Your Discovery Call</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== SECTION 6: FAQ ======== -->
+    <section class="section faq" id="faq">
+        <div class="container">
+            <div class="faq-header fade-in">
+                <h2 class="section-headline">Common Questions</h2>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item fade-in">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h4>I've heard AI is mostly hype. How do I know this will actually work?</h4>
+                        <div class="faq-toggle"></div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Fair question. Most AI conversation is hype. What we build is different because we use the same systems in our own operations every day. The 110+ agents in our ecosystem aren't demos or prototypes. They run production workflows across six ventures, handling real tasks with real consequences. We only recommend what we've already proven works.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in fade-in-delay-1">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h4>How long does a typical engagement take?</h4>
+                        <div class="faq-toggle"></div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The AI Readiness Assessment and Brand Architecture Sprint are both two-week engagements. Workflow Automation projects typically run 4 to 8 weeks. AI Agent Development ranges from 6 to 12 weeks depending on complexity. Political Campaign AI builds vary based on election timelines but can deploy initial systems in as little as 3 weeks. Fractional CAIO engagements are ongoing, with a minimum three-month commitment.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in fade-in-delay-2">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h4>What if we already use Zapier/Make/HubSpot? Do we have to switch tools?</h4>
+                        <div class="faq-toggle"></div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No. We work with whatever you already have. The goal is to make your existing tools smarter and more connected, not to rip and replace your stack. If we identify a tool that would serve you better, we'll recommend it, but the decision is always yours.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in fade-in-delay-3">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h4>What size companies do you work with?</h4>
+                        <div class="faq-toggle"></div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Primarily small and mid-market businesses, from 10-person teams to companies with a few hundred employees. We've also worked with large organizations (including Fortune 500 brand partners), but the sweet spot is companies big enough to benefit from automation and small enough to move quickly on it.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in fade-in-delay-4">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h4>Do we own what you build?</h4>
+                        <div class="faq-toggle"></div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. Everything we build belongs to you. Full documentation, full access, full ownership. We don't hold your systems hostage with proprietary platforms or recurring license fees. If you want to maintain and extend it yourself after the engagement, you absolutely can.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in fade-in-delay-5">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h4>What makes Project Baseline different from other AI consultants?</h4>
+                        <div class="faq-toggle"></div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Two things. First, we actually use what we sell. This isn't theoretical knowledge from a certification course. We run production AI systems across multiple businesses every day. Second, we implement, not just advise. A lot of AI consultants hand you a strategy deck and wish you luck. We build the systems, deploy them, and make sure they work before we walk away.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h4>Do you work with political campaigns specifically?</h4>
+                        <div class="faq-toggle"></div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. Todd was Interim Executive Director of the CEIDC (Committee to Elect Illinois Democratic Candidates) and has been running The Hip Hop Democrat for 18 years. We understand political operations from the inside, not just the tech side. Our campaign AI systems handle voter outreach automation, content pipelines, donor engagement, and digital strategy. We build what campaigns actually need to win, not what looks good in a demo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== SECTION 7: FINAL CTA ======== -->
+    <section class="final-cta" id="contact">
+        <div class="container">
+            <h2 class="section-headline fade-in">Ready to Put AI to Work?</h2>
+            <p class="final-cta-sub fade-in">The best time to start was six months ago. The second best time is a 30-minute conversation to figure out exactly what's possible for your business.</p>
+            <a href="https://calendly.com/todd-project-baseline/discovery" class="btn btn-primary fade-in">Book Your Discovery Call</a>
+            <p class="final-cta-email fade-in">Or email <a href="mailto:todd@project-baseline.com">todd@project-baseline.com</a> to start the conversation.</p>
+        </div>
+    </section>
+
+    <!-- ======== FOOTER ======== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-logo">Project <span>Baseline</span></div>
+                <div class="footer-text">&copy; 2026 Project Baseline. Colorado Corporation. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======== SCRIPTS ======== -->
+    <script>
+        // Mobile nav toggle
+        function toggleNav() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // Close mobile nav on link click
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+
+        // FAQ accordion
+        function toggleFaq(el) {
+            var item = el.parentElement;
+            var wasActive = item.classList.contains('active');
+
+            // Close all
+            document.querySelectorAll('.faq-item').forEach(function(faq) {
+                faq.classList.remove('active');
+            });
+
+            // Toggle clicked
+            if (!wasActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Scroll-triggered fade-in animations
+        (function() {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            document.querySelectorAll('.fade-in').forEach(function(el) {
+                observer.observe(el);
+            });
+        })();
+
+        // Nav background on scroll
+        (function() {
+            var nav = document.getElementById('nav');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    nav.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+                } else {
+                    nav.style.boxShadow = 'none';
+                }
+            });
+        })();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    var offset = 70; // nav height
+                    var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
