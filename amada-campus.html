@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMADA Soft Haus - Campus Visualization</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { overflow: hidden; background: #000; font-family: 'Segoe UI', system-ui, sans-serif; }
+canvas { display: block; }
+
+/* Loading Screen */
+#loading-screen {
+    position: fixed; inset: 0; z-index: 1000;
+    background: linear-gradient(135deg, #3A2F54 0%, #4F436F 50%, #3A2F54 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 0.8s ease;
+}
+#loading-screen.fade-out { opacity: 0; pointer-events: none; }
+#loading-screen h1 { color: #C7AE99; font-size: 2.2rem; letter-spacing: 3px; margin-bottom: 8px; font-weight: 300; }
+#loading-screen h2 { color: #6E6485; font-size: 0.95rem; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 40px; font-weight: 400; }
+#progress-container { width: 300px; height: 3px; background: rgba(199,174,153,0.15); border-radius: 2px; overflow: hidden; }
+#progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #C7AE99, #F6F0EA); transition: width 0.3s ease; }
+#loading-text { color: #6E6485; font-size: 0.75rem; margin-top: 16px; letter-spacing: 1px; }
+
+/* UI Overlay */
+#ui-overlay { position: fixed; top: 0; left: 0; z-index: 100; pointer-events: none; width: 100%; height: 100%; }
+#ui-overlay > * { pointer-events: auto; }
+
+/* Info Panel */
+#info-panel {
+    position: fixed; bottom: 20px; left: 20px; z-index: 100;
+    background: rgba(44,34,51,0.85); backdrop-filter: blur(12px);
+    border: 1px solid rgba(199,174,153,0.2); border-radius: 8px;
+    padding: 16px 20px; color: #d4d4c8; max-width: 320px;
+    font-size: 0.82rem; line-height: 1.5;
+    transition: opacity 0.3s, transform 0.3s;
+}
+#info-panel h3 { color: #C7AE99; font-size: 0.95rem; margin-bottom: 6px; font-weight: 500; }
+#info-panel p { color: #a0a898; }
+
+/* Controls Help */
+#controls-help {
+    position: fixed; top: 20px; right: 20px; z-index: 100;
+    background: rgba(44,34,51,0.8); backdrop-filter: blur(12px);
+    border: 1px solid rgba(199,174,153,0.15); border-radius: 8px;
+    padding: 12px 16px; color: #6E6485; font-size: 0.72rem;
+    line-height: 1.6;
+}
+#controls-help kbd {
+    background: rgba(199,174,153,0.15); border: 1px solid rgba(199,174,153,0.25);
+    border-radius: 3px; padding: 1px 5px; color: #C7AE99; font-family: inherit; font-size: 0.7rem;
+}
+
+/* Building Label */
+#building-label {
+    position: fixed; z-index: 100; pointer-events: none;
+    background: rgba(44,34,51,0.9); border: 1px solid rgba(199,174,153,0.3);
+    border-radius: 6px; padding: 8px 14px; color: #C7AE99;
+    font-size: 0.8rem; display: none; transform: translate(-50%, -120%);
+    white-space: nowrap;
+}
+
+/* View Buttons */
+#view-buttons {
+    position: fixed; bottom: 20px; right: 20px; z-index: 100;
+    display: flex; flex-direction: column; gap: 8px;
+}
+.view-btn {
+    background: rgba(44,34,51,0.85); backdrop-filter: blur(12px);
+    border: 1px solid rgba(199,174,153,0.25); border-radius: 6px;
+    color: #C7AE99; padding: 8px 14px; cursor: pointer; font-size: 0.75rem;
+    font-family: inherit; letter-spacing: 0.5px; transition: all 0.2s;
+}
+.view-btn:hover { background: rgba(199,174,153,0.15); border-color: rgba(199,174,153,0.5); }
+.view-btn.active { background: rgba(199,174,153,0.2); border-color: #C7AE99; }
+
+/* Time of Day */
+#time-selector {
+    position: fixed; top: 20px; left: 20px; z-index: 100;
+    display: flex; gap: 6px;
+}
+.time-btn {
+    background: rgba(44,34,51,0.8); border: 1px solid rgba(199,174,153,0.2);
+    border-radius: 4px; color: #6E6485; padding: 6px 10px; cursor: pointer;
+    font-size: 0.7rem; font-family: inherit; transition: all 0.2s;
+}
+.time-btn:hover, .time-btn.active { color: #C7AE99; border-color: rgba(199,174,153,0.4); background: rgba(199,174,153,0.1); }
+
+/* Attribution */
+#attribution {
+    position: fixed; bottom: 5px; left: 50%; transform: translateX(-50%); z-index: 100;
+    color: rgba(150,150,140,0.4); font-size: 0.6rem; letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+    <h1>AMADA Soft Haus</h1>
+    <h2>Campus Visualization</h2>
+    <div id="progress-container"><div id="progress-bar"></div></div>
+    <p id="loading-text">Initializing...</p>
+</div>
+
+<!-- UI -->
+<div id="ui-overlay">
+    <div id="building-label"></div>
+</div>
+
+<div id="time-selector">
+    <button class="time-btn" data-time="morning">Morning</button>
+    <button class="time-btn active" data-time="golden">Golden Hour</button>
+    <button class="time-btn" data-time="midday">Midday</button>
+</div>
+
+<div id="controls-help">
+    <kbd>LMB</kbd> Rotate &nbsp; <kbd>RMB</kbd> Pan &nbsp; <kbd>Scroll</kbd> Zoom<br>
+    <kbd>1-4</kbd> Camera Presets &nbsp; <kbd>R</kbd> Reset View
+</div>
+
+<div id="info-panel">
+    <h3>AMADA Soft Haus</h3>
+    <p>30-acre residential care campus for adults with complex developmental disabilities. 6 individual SOFT cottages arranged in a horseshoe arc around therapeutic sensory gardens.</p>
+</div>
+
+<div id="view-buttons">
+    <button class="view-btn" data-view="overview">Overview</button>
+    <button class="view-btn" data-view="residential">Residential Core</button>
+    <button class="view-btn" data-view="gardens">Sensory Gardens</button>
+    <button class="view-btn" data-view="village">Caregiver Village</button>
+</div>
+
+<div id="attribution">AMADA Soft Haus - Project Baseline</div>
+
+<!-- Import Map for Three.js -->
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+// ============================================================
+// GLOBALS
+// ============================================================
+let scene, camera, renderer, controls, composer;
+let sun, ambientLight, hemiLight;
+let buildingMeshes = [];
+const clock = new THREE.Clock();
+
+const loadingScreen = document.getElementById('loading-screen');
+const progressBar = document.getElementById('progress-bar');
+const loadingText = document.getElementById('loading-text');
+const buildingLabel = document.getElementById('building-label');
+
+// ============================================================
+// MODULE 1: RENDERER SETUP
+// ============================================================
+function initRenderer() {
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    document.body.appendChild(renderer.domElement);
+}
+
+function initScene() {
+    scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0xc8d8c0, 0.0018);
+
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 500);
+    camera.position.set(110, 75, 120);
+    camera.lookAt(0, 0, 0);
+}
+
+function initControls() {
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.maxDistance = 250;
+    controls.minDistance = 10;
+    controls.maxPolarAngle = Math.PI / 2.15;
+    controls.target.set(0, 2, 0);
+    controls.update();
+}
+
+function initPostProcessing() {
+    composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+
+    const bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        0.15, 0.4, 0.85
+    );
+    composer.addPass(bloomPass);
+
+    const smaaPass = new SMAAPass(
+        window.innerWidth * renderer.getPixelRatio(),
+        window.innerHeight * renderer.getPixelRatio()
+    );
+    composer.addPass(smaaPass);
+}
+
+// ============================================================
+// MODULE 2: HDRI ENVIRONMENT
+// ============================================================
+function loadEnvironment() {
+    updateLoading(5, 'Loading sky environment...');
+
+    return new Promise((resolve) => {
+        const rgbeLoader = new RGBELoader();
+        rgbeLoader.load(
+            'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/kloppenheim_06_puresky_1k.hdr',
+            (texture) => {
+                texture.mapping = THREE.EquirectangularReflectionMapping;
+                scene.environment = texture;
+                scene.background = texture;
+                scene.backgroundBlurriness = 0.0;
+                scene.backgroundIntensity = 0.9;
+                updateLoading(15, 'Sky loaded');
+                resolve();
+            },
+            undefined,
+            () => {
+                // Fallback: gradient sky
+                console.warn('HDRI failed to load, using gradient sky fallback');
+                createFallbackSky();
+                updateLoading(15, 'Using fallback sky');
+                resolve();
+            }
+        );
+    });
+}
+
+function createFallbackSky() {
+    const skyGeo = new THREE.SphereGeometry(300, 32, 15);
+    const skyMat = new THREE.ShaderMaterial({
+        uniforms: {
+            topColor: { value: new THREE.Color(0x5588bb) },
+            bottomColor: { value: new THREE.Color(0xddccaa) },
+            offset: { value: 20 },
+            exponent: { value: 0.4 }
+        },
+        vertexShader: `
+            varying vec3 vWorldPosition;
+            void main() {
+                vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                vWorldPosition = worldPosition.xyz;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform vec3 topColor;
+            uniform vec3 bottomColor;
+            uniform float offset;
+            uniform float exponent;
+            varying vec3 vWorldPosition;
+            void main() {
+                float h = normalize(vWorldPosition + offset).y;
+                gl_FragColor = vec4(mix(bottomColor, topColor, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);
+            }
+        `,
+        side: THREE.BackSide
+    });
+    scene.add(new THREE.Mesh(skyGeo, skyMat));
+}
+
+// ============================================================
+// MODULE 10: LIGHTING
+// ============================================================
+function initLighting() {
+    updateLoading(20, 'Setting up lighting...');
+
+    // Sun - golden hour angle
+    sun = new THREE.DirectionalLight(0xffe4b5, 2.5);
+    sun.position.set(40, 35, 25);
+    sun.castShadow = true;
+    sun.shadow.mapSize.width = 4096;
+    sun.shadow.mapSize.height = 4096;
+    sun.shadow.camera.near = 0.5;
+    sun.shadow.camera.far = 250;
+    sun.shadow.camera.left = -150;
+    sun.shadow.camera.right = 150;
+    sun.shadow.camera.top = 150;
+    sun.shadow.camera.bottom = -150;
+    sun.shadow.bias = -0.0005;
+    sun.shadow.normalBias = 0.02;
+    scene.add(sun);
+
+    // Fill light from opposite side (softer, cooler)
+    const fillLight = new THREE.DirectionalLight(0x8899bb, 0.4);
+    fillLight.position.set(-30, 20, -20);
+    scene.add(fillLight);
+
+    // Ambient light
+    ambientLight = new THREE.AmbientLight(0x404840, 0.4);
+    scene.add(ambientLight);
+
+    // Hemisphere light (sky blue from top, green-tinted from ground bounce)
+    hemiLight = new THREE.HemisphereLight(0x87ceeb, 0x556b2f, 0.35);
+    scene.add(hemiLight);
+}
+
+// ============================================================
+// MODULE 3: TEXTURED GROUND
+// ============================================================
+function createGround() {
+    updateLoading(25, 'Creating terrain...');
+
+    // Main ground plane with grass-like material
+    const groundGeo = new THREE.PlaneGeometry(400, 400, 80, 80);
+    groundGeo.rotateX(-Math.PI / 2);
+
+    // FLAT ground - no hills inside the campus, gentle hills only far outside
+    const posAttr = groundGeo.getAttribute('position');
+    for (let i = 0; i < posAttr.count; i++) {
+        const x = posAttr.getX(i);
+        const z = posAttr.getZ(i);
+        const dist = Math.sqrt(x * x + (z - 10) * (z - 10)); // center offset for campus
+        // Only add terrain outside 120m from campus center
+        let y = 0;
+        if (dist > 120) {
+            const edge = (dist - 120) / 80; // gradual rise
+            y = Math.sin(x * 0.015) * Math.cos(z * 0.012) * edge * 1.5;
+        }
+        posAttr.setY(i, y);
+    }
+    groundGeo.computeVertexNormals();
+
+    const groundMat = new THREE.MeshStandardMaterial({
+        color: 0x6b8f4e,  // Lighter, warmer green
+        roughness: 0.92,
+        metalness: 0.0,
+    });
+
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // Dark green courtyard layer REMOVED - was covering walkways
+}
+
+// ============================================================
+// MODULE 4 & 5: COTTAGE BUILDER (with PBR Materials)
+// ============================================================
+function createCottage(wallColor, roofColor, name, sqft) {
+    const group = new THREE.Group();
+    group.userData = { name, sqft, type: 'cottage' };
+
+    const W = 9.5;  // ~31 ft width
+    const D = 7.5;  // ~25 ft depth
+    const wallH = 3.2; // ~10.5 ft wall height
+    const roofPeak = 2.8; // roof peak above walls
+    const porchD = 2.5; // porch depth
+    const porchW = 4.5;
+
+    // ---- WALLS ----
+    const wallMat = new THREE.MeshStandardMaterial({
+        color: wallColor,
+        roughness: 0.82,
+        metalness: 0.0,
+    });
+
+    // Main body walls
+    const wallGeo = new THREE.BoxGeometry(W, wallH, D);
+    const walls = new THREE.Mesh(wallGeo, wallMat);
+    walls.position.y = wallH / 2;
+    walls.castShadow = true;
+    walls.receiveShadow = true;
+    group.add(walls);
+
+    // Foundation / base strip
+    const foundGeo = new THREE.BoxGeometry(W + 0.3, 0.35, D + 0.3);
+    const foundMat = new THREE.MeshStandardMaterial({ color: 0x7a7a72, roughness: 0.9, metalness: 0.0 });
+    const foundation = new THREE.Mesh(foundGeo, foundMat);
+    foundation.position.y = 0.175;
+    foundation.receiveShadow = true;
+    group.add(foundation);
+
+    // ---- PITCHED ROOF ----
+    const roofMat = new THREE.MeshStandardMaterial({
+        color: roofColor,
+        roughness: 0.65,
+        metalness: 0.15,
+    });
+
+    const roofShape = new THREE.Shape();
+    const overhang = 0.8;
+    roofShape.moveTo(-(W / 2 + overhang), 0);
+    roofShape.lineTo(0, roofPeak);
+    roofShape.lineTo(W / 2 + overhang, 0);
+    roofShape.lineTo(-(W / 2 + overhang), 0);
+
+    const roofGeo = new THREE.ExtrudeGeometry(roofShape, {
+        depth: D + overhang * 2,
+        bevelEnabled: false
+    });
+    const roof = new THREE.Mesh(roofGeo, roofMat);
+    roof.position.set(0, wallH, -(D / 2 + overhang));
+    roof.castShadow = true;
+    roof.receiveShadow = true;
+    group.add(roof);
+
+    // Gable fill (front and back triangles)
+    const gableShape = new THREE.Shape();
+    gableShape.moveTo(-W / 2, 0);
+    gableShape.lineTo(0, roofPeak);
+    gableShape.lineTo(W / 2, 0);
+    gableShape.lineTo(-W / 2, 0);
+    const gableGeo = new THREE.ShapeGeometry(gableShape);
+
+    const gableFront = new THREE.Mesh(gableGeo, wallMat);
+    gableFront.position.set(0, wallH, D / 2 + 0.01);
+    group.add(gableFront);
+
+    const gableBack = new THREE.Mesh(gableGeo, wallMat);
+    gableBack.position.set(0, wallH, -(D / 2 + 0.01));
+    gableBack.rotation.y = Math.PI;
+    group.add(gableBack);
+
+    // ---- PORCH ----
+    const porchFloorGeo = new THREE.BoxGeometry(porchW + 1, 0.15, porchD);
+    const porchMat = new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.7, metalness: 0.0 });
+    const porchFloor = new THREE.Mesh(porchFloorGeo, porchMat);
+    porchFloor.position.set(0, 0.08, D / 2 + porchD / 2);
+    porchFloor.receiveShadow = true;
+    group.add(porchFloor);
+
+    // Porch step
+    const stepGeo = new THREE.BoxGeometry(porchW + 1, 0.12, 0.5);
+    const step = new THREE.Mesh(stepGeo, new THREE.MeshStandardMaterial({ color: 0x6a6a62, roughness: 0.85 }));
+    step.position.set(0, 0.06, D / 2 + porchD + 0.25);
+    step.receiveShadow = true;
+    group.add(step);
+
+    // Porch posts (4)
+    const postMat = new THREE.MeshStandardMaterial({ color: 0xf0ece0, roughness: 0.6 });
+    const postPositions = [
+        [-(porchW / 2), D / 2 + porchD - 0.15],
+        [porchW / 2, D / 2 + porchD - 0.15],
+        [-(porchW / 2), D / 2 + 0.3],
+        [porchW / 2, D / 2 + 0.3]
+    ];
+    for (const [px, pz] of postPositions) {
+        const postGeo = new THREE.BoxGeometry(0.12, wallH * 0.85, 0.12);
+        const post = new THREE.Mesh(postGeo, postMat);
+        post.position.set(px, wallH * 0.85 / 2, pz);
+        post.castShadow = true;
+        group.add(post);
+    }
+
+    // Porch roof (small shed roof)
+    const porchRoofGeo = new THREE.BoxGeometry(porchW + 1.5, 0.08, porchD + 0.6);
+    const porchRoof = new THREE.Mesh(porchRoofGeo, roofMat);
+    porchRoof.position.set(0, wallH * 0.88, D / 2 + porchD / 2);
+    porchRoof.rotation.x = -0.08;
+    porchRoof.castShadow = true;
+    group.add(porchRoof);
+
+    // ---- WINDOWS ----
+    const windowMat = new THREE.MeshStandardMaterial({
+        color: 0x8ec8e8,
+        roughness: 0.05,
+        metalness: 0.4,
+        envMapIntensity: 1.5,
+    });
+    const windowFrameMat = new THREE.MeshStandardMaterial({ color: 0xf0ece0, roughness: 0.5 });
+
+    // Front windows (2 flanking the door)
+    for (const wx of [-2.8, 2.8]) {
+        createWindow(group, wx, 1.8, D / 2 + 0.02, 0, windowMat, windowFrameMat, 1.0, 1.3);
+    }
+    // Side windows (2 per side)
+    for (const wz of [-1.5, 1.5]) {
+        createWindow(group, W / 2 + 0.02, 1.8, wz, Math.PI / 2, windowMat, windowFrameMat, 0.9, 1.2);
+        createWindow(group, -(W / 2 + 0.02), 1.8, wz, -Math.PI / 2, windowMat, windowFrameMat, 0.9, 1.2);
+    }
+    // Back windows
+    for (const wx of [-2.5, 2.5]) {
+        createWindow(group, wx, 1.8, -(D / 2 + 0.02), Math.PI, windowMat, windowFrameMat, 0.9, 1.2);
+    }
+
+    // ---- FRONT DOOR ----
+    const doorGeo = new THREE.PlaneGeometry(1.0, 2.3);
+    const doorMat = new THREE.MeshStandardMaterial({ color: 0x4a3728, roughness: 0.55, metalness: 0.05 });
+    const door = new THREE.Mesh(doorGeo, doorMat);
+    door.position.set(0, 1.15, D / 2 + 0.02);
+    group.add(door);
+
+    // Door frame
+    const doorFrameT = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 0.08, 0.06),
+        windowFrameMat
+    );
+    doorFrameT.position.set(0, 2.35, D / 2 + 0.03);
+    group.add(doorFrameT);
+
+    // Door handle
+    const handleGeo = new THREE.SphereGeometry(0.04, 8, 6);
+    const handleMat = new THREE.MeshStandardMaterial({ color: 0xc9a96e, roughness: 0.3, metalness: 0.7 });
+    const handle = new THREE.Mesh(handleGeo, handleMat);
+    handle.position.set(0.35, 1.1, D / 2 + 0.05);
+    group.add(handle);
+
+    // ---- CHIMNEY ----
+    const chimneyGeo = new THREE.BoxGeometry(0.5, 2.0, 0.5);
+    const chimneyMat = new THREE.MeshStandardMaterial({ color: 0x8a7a6a, roughness: 0.85 });
+    const chimney = new THREE.Mesh(chimneyGeo, chimneyMat);
+    chimney.position.set(W / 4, wallH + roofPeak * 0.6 + 1.0, -D / 4);
+    chimney.castShadow = true;
+    group.add(chimney);
+
+    return group;
+}
+
+function createWindow(parent, x, y, z, rotY, glassMat, frameMat, w, h) {
+    const windowGroup = new THREE.Group();
+
+    // Glass pane
+    const glassGeo = new THREE.PlaneGeometry(w, h);
+    const glass = new THREE.Mesh(glassGeo, glassMat);
+    windowGroup.add(glass);
+
+    // Frame (4 border pieces + 2 mullions)
+    const frameThick = 0.06;
+    const frameParts = [
+        [0, h / 2, w + frameThick * 2, frameThick],  // top
+        [0, -h / 2, w + frameThick * 2, frameThick], // bottom
+        [-w / 2, 0, frameThick, h],                    // left
+        [w / 2, 0, frameThick, h],                     // right
+        [0, 0, w, frameThick],                          // center horizontal mullion
+        [0, 0, frameThick, h],                          // center vertical mullion
+    ];
+    for (const [fx, fy, fw, fh] of frameParts) {
+        const fGeo = new THREE.PlaneGeometry(fw, fh);
+        const frame = new THREE.Mesh(fGeo, frameMat);
+        frame.position.set(fx, fy, 0.005);
+        windowGroup.add(frame);
+    }
+
+    windowGroup.position.set(x, y, z);
+    windowGroup.rotation.y = rotY;
+    parent.add(windowGroup);
+}
+
+// ============================================================
+// MODULE 5: CAMPUS LAYOUT
+// ============================================================
+function buildCampus() {
+    updateLoading(35, 'Building residential cottages...');
+
+    // 6 SOFT residential cottages in a horseshoe arc
+    const cottageData = [
+        { color: 0x8fbc8f, roof: 0x5a5a52, name: 'SOFT Unit 1 - Sage', sqft: '800 sq ft' },
+        { color: 0xf5f0dc, roof: 0x6a5a48, name: 'SOFT Unit 2 - Cream', sqft: '800 sq ft' },
+        { color: 0xa8a8a0, roof: 0x4a4a45, name: 'SOFT Unit 3 - Warm Gray', sqft: '800 sq ft' },
+        { color: 0xc8ad82, roof: 0x5a4a38, name: 'SOFT Unit 4 - Soft Brown', sqft: '800 sq ft' },
+        { color: 0x9ab0c8, roof: 0x4a5a68, name: 'SOFT Unit 5 - Dusty Blue', sqft: '800 sq ft' },
+        { color: 0xb8805a, roof: 0x5a4a3a, name: 'SOFT Unit 6 - Terracotta', sqft: '800 sq ft' },
+    ];
+
+    const arcRadius = 38;
+    const arcStartAngle = Math.PI * 0.2;
+    const arcEndAngle = Math.PI * 0.8;
+
+    for (let i = 0; i < 6; i++) {
+        const d = cottageData[i];
+        const angle = arcStartAngle + (arcEndAngle - arcStartAngle) * (i / 5);
+        const x = Math.cos(angle) * arcRadius;
+        const z = -Math.sin(angle) * arcRadius;
+
+        const cottage = createCottage(d.color, d.roof, d.name, d.sqft);
+        cottage.position.set(x, 0, z);
+        cottage.rotation.y = angle - Math.PI / 2;
+        scene.add(cottage);
+        buildingMeshes.push(cottage);
+    }
+
+    // ---- STAFF OBSERVATION PAVILION ----
+    updateLoading(40, 'Building staff pavilion...');
+    const pavilion = createPavilion();
+    pavilion.position.set(0, 0, -arcRadius * 0.3);
+    scene.add(pavilion);
+    buildingMeshes.push(pavilion);
+
+    // ---- DAY PROGRAM BUILDING ----
+    updateLoading(45, 'Building Day Program center...');
+    const dayProgram = createDayProgram();
+    dayProgram.position.set(0, 0, 25);
+    scene.add(dayProgram);
+    buildingMeshes.push(dayProgram);
+
+    // ---- CAREGIVER VILLAGE ----
+    updateLoading(50, 'Building Caregiver Village...');
+    buildCaregiverVillage();
+}
+
+function createPavilion() {
+    const group = new THREE.Group();
+    group.userData = { name: 'Staff Observation Pavilion', sqft: '400 sq ft', type: 'pavilion' };
+
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0xe8dcc8, roughness: 0.75 });
+    const baseGeo = new THREE.BoxGeometry(5, 2.8, 5);
+    const base = new THREE.Mesh(baseGeo, baseMat);
+    base.position.y = 1.4;
+    base.castShadow = true;
+    base.receiveShadow = true;
+    group.add(base);
+
+    // Pyramid roof
+    const roofGeo = new THREE.ConeGeometry(4.5, 2.0, 4);
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x5a5a50, roughness: 0.65, metalness: 0.1 });
+    const roof = new THREE.Mesh(roofGeo, roofMat);
+    roof.position.y = 3.8;
+    roof.rotation.y = Math.PI / 4;
+    roof.castShadow = true;
+    group.add(roof);
+
+    // Large windows on all sides
+    const windowMat = new THREE.MeshStandardMaterial({ color: 0x8ec8e8, roughness: 0.05, metalness: 0.4 });
+    for (let rot = 0; rot < 4; rot++) {
+        const winGeo = new THREE.PlaneGeometry(3.5, 1.8);
+        const win = new THREE.Mesh(winGeo, windowMat);
+        const angle = (rot * Math.PI) / 2;
+        win.position.set(Math.sin(angle) * 2.51, 1.7, Math.cos(angle) * 2.51);
+        win.rotation.y = angle;
+        group.add(win);
+    }
+
+    return group;
+}
+
+function createDayProgram() {
+    const group = new THREE.Group();
+    group.userData = { name: 'Day Program Building', sqft: '4,500 sq ft', type: 'day-program' };
+
+    const W = 20, D = 12, H = 4;
+
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xd8cbb8, roughness: 0.78 });
+    const wallGeo = new THREE.BoxGeometry(W, H, D);
+    const walls = new THREE.Mesh(wallGeo, wallMat);
+    walls.position.y = H / 2;
+    walls.castShadow = true;
+    walls.receiveShadow = true;
+    group.add(walls);
+
+    // Foundation
+    const foundGeo = new THREE.BoxGeometry(W + 0.4, 0.4, D + 0.4);
+    const foundMat = new THREE.MeshStandardMaterial({ color: 0x7a7a72, roughness: 0.9 });
+    const foundation = new THREE.Mesh(foundGeo, foundMat);
+    foundation.position.y = 0.2;
+    group.add(foundation);
+
+    // Gabled roof
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x5a5a4a, roughness: 0.65, metalness: 0.1 });
+    const roofShape = new THREE.Shape();
+    const ov = 1.0;
+    roofShape.moveTo(-(W / 2 + ov), 0);
+    roofShape.lineTo(0, 3.0);
+    roofShape.lineTo(W / 2 + ov, 0);
+    const roofGeo = new THREE.ExtrudeGeometry(roofShape, { depth: D + ov * 2, bevelEnabled: false });
+    const roof = new THREE.Mesh(roofGeo, roofMat);
+    roof.position.set(0, H, -(D / 2 + ov));
+    roof.castShadow = true;
+    group.add(roof);
+
+    // Gable fills
+    const gableShape = new THREE.Shape();
+    gableShape.moveTo(-W / 2, 0);
+    gableShape.lineTo(0, 3.0);
+    gableShape.lineTo(W / 2, 0);
+    const gableGeo = new THREE.ShapeGeometry(gableShape);
+    const gFront = new THREE.Mesh(gableGeo, wallMat);
+    gFront.position.set(0, H, D / 2 + 0.01);
+    group.add(gFront);
+    const gBack = new THREE.Mesh(gableGeo, wallMat);
+    gBack.position.set(0, H, -(D / 2 + 0.01));
+    gBack.rotation.y = Math.PI;
+    group.add(gBack);
+
+    // Windows - front
+    const windowMat = new THREE.MeshStandardMaterial({ color: 0x8ec8e8, roughness: 0.05, metalness: 0.4 });
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0xf0ece0, roughness: 0.5 });
+    for (let wx = -7; wx <= 7; wx += 2.5) {
+        createWindow(group, wx, 2.2, D / 2 + 0.02, 0, windowMat, frameMat, 1.4, 1.8);
+    }
+    // Back windows
+    for (let wx = -6; wx <= 6; wx += 3) {
+        createWindow(group, wx, 2.2, -(D / 2 + 0.02), Math.PI, windowMat, frameMat, 1.2, 1.6);
+    }
+
+    // Entry canopy
+    const canopyGeo = new THREE.BoxGeometry(6, 0.1, 3);
+    const canopy = new THREE.Mesh(canopyGeo, roofMat);
+    canopy.position.set(0, 3.2, D / 2 + 1.5);
+    canopy.castShadow = true;
+    group.add(canopy);
+
+    // Canopy posts
+    for (const px of [-2.8, 2.8]) {
+        const pGeo = new THREE.BoxGeometry(0.15, 3.2, 0.15);
+        const post = new THREE.Mesh(pGeo, new THREE.MeshStandardMaterial({ color: 0xf0ece0, roughness: 0.5 }));
+        post.position.set(px, 1.6, D / 2 + 2.8);
+        post.castShadow = true;
+        group.add(post);
+    }
+
+    // Double doors
+    for (const dx of [-0.6, 0.6]) {
+        const doorGeo = new THREE.PlaneGeometry(0.95, 2.5);
+        const doorMat = new THREE.MeshStandardMaterial({ color: 0x4a3728, roughness: 0.5 });
+        const door = new THREE.Mesh(doorGeo, doorMat);
+        door.position.set(dx, 1.25, D / 2 + 0.02);
+        group.add(door);
+    }
+
+    return group;
+}
+
+function buildCaregiverVillage() {
+    const villageCenter = new THREE.Vector3(-55, 0, 45);
+
+    const buildingData = [
+        { name: 'Caregiver Building A', units: '3 units (1BR)', offset: [-8, 0, 0] },
+        { name: 'Caregiver Building B', units: '3 units (1BR + 2BR)', offset: [8, 0, 0] },
+        { name: 'Caregiver Building C', units: '2 units (2BR)', offset: [0, 0, 14] },
+    ];
+
+    for (const bd of buildingData) {
+        const bldg = createApartmentBuilding(bd.name, bd.units);
+        bldg.position.set(
+            villageCenter.x + bd.offset[0],
+            villageCenter.y + bd.offset[1],
+            villageCenter.z + bd.offset[2]
+        );
+        // Building C faces same direction as A and B (no rotation)
+        scene.add(bldg);
+        buildingMeshes.push(bldg);
+    }
+
+    // Community building
+    const communal = createCommunalBuilding();
+    communal.position.set(villageCenter.x, 0, villageCenter.z - 10);
+    scene.add(communal);
+    buildingMeshes.push(communal);
+}
+
+function createApartmentBuilding(name, units) {
+    const group = new THREE.Group();
+    group.userData = { name, sqft: units, type: 'apartment' };
+
+    const W = 14, D = 8, H1 = 3.2, H2 = 3.0;
+
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xc8bba8, roughness: 0.78 });
+    const wallGeo = new THREE.BoxGeometry(W, H1 + H2, D);
+    const walls = new THREE.Mesh(wallGeo, wallMat);
+    walls.position.y = (H1 + H2) / 2;
+    walls.castShadow = true;
+    walls.receiveShadow = true;
+    group.add(walls);
+
+    // Foundation
+    const foundGeo = new THREE.BoxGeometry(W + 0.3, 0.4, D + 0.3);
+    const found = new THREE.Mesh(foundGeo, new THREE.MeshStandardMaterial({ color: 0x7a7a72, roughness: 0.9 }));
+    found.position.y = 0.2;
+    group.add(found);
+
+    // Second floor line
+    const lineMat = new THREE.MeshStandardMaterial({ color: 0xa09888 });
+    const lineGeo = new THREE.BoxGeometry(W + 0.05, 0.08, D + 0.05);
+    const floorLine = new THREE.Mesh(lineGeo, lineMat);
+    floorLine.position.y = H1;
+    group.add(floorLine);
+
+    // Roof
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x5a5a4a, roughness: 0.65, metalness: 0.1 });
+    const roofShape = new THREE.Shape();
+    const ov = 0.7;
+    roofShape.moveTo(-(W / 2 + ov), 0);
+    roofShape.lineTo(0, 2.0);
+    roofShape.lineTo(W / 2 + ov, 0);
+    const roofGeo = new THREE.ExtrudeGeometry(roofShape, { depth: D + ov * 2, bevelEnabled: false });
+    const roof = new THREE.Mesh(roofGeo, roofMat);
+    roof.position.set(0, H1 + H2, -(D / 2 + ov));
+    roof.castShadow = true;
+    group.add(roof);
+
+    // Gable fills
+    const gableShape = new THREE.Shape();
+    gableShape.moveTo(-W / 2, 0); gableShape.lineTo(0, 2.0); gableShape.lineTo(W / 2, 0);
+    const gGeo = new THREE.ShapeGeometry(gableShape);
+    const gF = new THREE.Mesh(gGeo, wallMat);
+    gF.position.set(0, H1 + H2, D / 2 + 0.01);
+    group.add(gF);
+    const gB = new THREE.Mesh(gGeo, wallMat);
+    gB.position.set(0, H1 + H2, -(D / 2 + 0.01));
+    gB.rotation.y = Math.PI;
+    group.add(gB);
+
+    // Windows (both floors)
+    const winMat = new THREE.MeshStandardMaterial({ color: 0x8ec8e8, roughness: 0.05, metalness: 0.4 });
+    const frMat = new THREE.MeshStandardMaterial({ color: 0xf0ece0, roughness: 0.5 });
+    for (let floor = 0; floor < 2; floor++) {
+        const yBase = floor === 0 ? 1.8 : H1 + 1.6;
+        for (let wx = -5; wx <= 5; wx += 2.5) {
+            createWindow(group, wx, yBase, D / 2 + 0.02, 0, winMat, frMat, 0.9, 1.1);
+            createWindow(group, wx, yBase, -(D / 2 + 0.02), Math.PI, winMat, frMat, 0.9, 1.1);
+        }
+    }
+
+    // Entry doors
+    for (let dx = -3; dx <= 3; dx += 3) {
+        const doorGeo = new THREE.PlaneGeometry(0.9, 2.2);
+        const doorMat = new THREE.MeshStandardMaterial({ color: 0x4a3728, roughness: 0.5 });
+        const door = new THREE.Mesh(doorGeo, doorMat);
+        door.position.set(dx, 1.1, D / 2 + 0.02);
+        group.add(door);
+    }
+
+    return group;
+}
+
+function createCommunalBuilding() {
+    const group = new THREE.Group();
+    group.userData = { name: 'Village Community Building', sqft: '1,200 sq ft', type: 'communal' };
+
+    const W = 10, D = 8, H = 3.5;
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xd0c4b0, roughness: 0.75 });
+    const wallGeo = new THREE.BoxGeometry(W, H, D);
+    const walls = new THREE.Mesh(wallGeo, wallMat);
+    walls.position.y = H / 2;
+    walls.castShadow = true;
+    walls.receiveShadow = true;
+    group.add(walls);
+
+    // Foundation
+    const fGeo = new THREE.BoxGeometry(W + 0.3, 0.35, D + 0.3);
+    const found = new THREE.Mesh(fGeo, new THREE.MeshStandardMaterial({ color: 0x7a7a72, roughness: 0.9 }));
+    found.position.y = 0.175;
+    group.add(found);
+
+    // Hip roof
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x5a5a4a, roughness: 0.65, metalness: 0.1 });
+    const roofGeo = new THREE.ConeGeometry(8, 2.5, 4);
+    const roof = new THREE.Mesh(roofGeo, roofMat);
+    roof.position.y = H + 1.25;
+    roof.rotation.y = Math.PI / 4;
+    roof.castShadow = true;
+    group.add(roof);
+
+    // Large front windows
+    const winMat = new THREE.MeshStandardMaterial({ color: 0x8ec8e8, roughness: 0.05, metalness: 0.4 });
+    const frMat = new THREE.MeshStandardMaterial({ color: 0xf0ece0, roughness: 0.5 });
+    for (let wx = -3; wx <= 3; wx += 2) {
+        createWindow(group, wx, 2.0, D / 2 + 0.02, 0, winMat, frMat, 1.3, 1.6);
+    }
+
+    return group;
+}
+
+// ============================================================
+// MODULE 8: VEGETATION
+// ============================================================
+function createVegetation() {
+    updateLoading(60, 'Planting trees and gardens...');
+
+    // --- DECIDUOUS TREES ---
+    function createDeciduousTree(scale) {
+        const group = new THREE.Group();
+
+        const trunkGeo = new THREE.CylinderGeometry(0.08 * scale, 0.18 * scale, 3 * scale, 8);
+        const trunkMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(0.35 + Math.random() * 0.1, 0.22 + Math.random() * 0.08, 0.12),
+            roughness: 0.92,
+            metalness: 0.0
+        });
+        const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+        trunk.position.y = 1.5 * scale;
+        trunk.castShadow = true;
+        group.add(trunk);
+
+        const leafColor = new THREE.Color(
+            0.15 + Math.random() * 0.15,
+            0.35 + Math.random() * 0.2,
+            0.1 + Math.random() * 0.1
+        );
+        const leafMat = new THREE.MeshStandardMaterial({
+            color: leafColor,
+            roughness: 0.85,
+            metalness: 0.0,
+        });
+
+        const crownParts = 5 + Math.floor(Math.random() * 4);
+        for (let i = 0; i < crownParts; i++) {
+            const size = (0.7 + Math.random() * 0.8) * scale;
+            const leafGeo = new THREE.SphereGeometry(size, 8, 6);
+            const leaf = new THREE.Mesh(leafGeo, leafMat);
+            leaf.position.set(
+                (Math.random() - 0.5) * 1.5 * scale,
+                (3 + Math.random() * 2) * scale,
+                (Math.random() - 0.5) * 1.5 * scale
+            );
+            leaf.castShadow = true;
+            group.add(leaf);
+        }
+
+        return group;
+    }
+
+    // --- PINE / CONIFER TREES ---
+    function createPineTree(scale) {
+        const group = new THREE.Group();
+
+        const trunkGeo = new THREE.CylinderGeometry(0.06 * scale, 0.14 * scale, 4 * scale, 6);
+        const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4a3020, roughness: 0.92 });
+        const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+        trunk.position.y = 2 * scale;
+        trunk.castShadow = true;
+        group.add(trunk);
+
+        const pineMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(0.08, 0.28 + Math.random() * 0.1, 0.08),
+            roughness: 0.88
+        });
+        for (let layer = 0; layer < 4; layer++) {
+            const radius = (1.8 - layer * 0.35) * scale;
+            const height = 1.8 * scale;
+            const coneGeo = new THREE.ConeGeometry(radius, height, 8);
+            const cone = new THREE.Mesh(coneGeo, pineMat);
+            cone.position.y = (2.5 + layer * 1.3) * scale;
+            cone.castShadow = true;
+            group.add(cone);
+        }
+
+        return group;
+    }
+
+    // --- BUSHES / SHRUBS ---
+    function createShrub(color) {
+        const group = new THREE.Group();
+        const shrubMat = new THREE.MeshStandardMaterial({
+            color: color || 0x3a6828,
+            roughness: 0.88,
+        });
+        const parts = 3 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < parts; i++) {
+            const size = 0.3 + Math.random() * 0.4;
+            const sGeo = new THREE.SphereGeometry(size, 6, 5);
+            const s = new THREE.Mesh(sGeo, shrubMat);
+            s.position.set(
+                (Math.random() - 0.5) * 0.6,
+                size * 0.7,
+                (Math.random() - 0.5) * 0.6
+            );
+            s.castShadow = true;
+            group.add(s);
+        }
+        return group;
+    }
+
+    // Plant perimeter tree buffer (outside main walking loop at r=85)
+    for (let i = 0; i < 250; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const minR = 92, maxR = 140;
+        const radius = minR + Math.random() * (maxR - minR);
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+
+        const scale = 0.8 + Math.random() * 0.8;
+        const tree = Math.random() > 0.3
+            ? createDeciduousTree(scale)
+            : createPineTree(scale);
+        tree.position.set(x, 0, z);
+        tree.rotation.y = Math.random() * Math.PI * 2;
+        scene.add(tree);
+    }
+
+    // Interior trees
+    const interiorTreeSpots = [
+        [15, 0, -15], [-15, 0, -15], [20, 0, 5], [-20, 0, 5],
+        [25, 0, 15], [-25, 0, 15], [10, 0, 18], [-10, 0, 18],
+        [12, 0, 30], [-12, 0, 30], [8, 0, 35], [-8, 0, 35],
+        [35, 0, -20], [-35, 0, -20], [40, 0, -5], [-40, 0, -5],
+        [30, 0, -35], [-30, 0, -35],
+        [-45, 0, 35], [-65, 0, 35], [-50, 0, 55], [-60, 0, 55],
+    ];
+    for (const [x, y, z] of interiorTreeSpots) {
+        const scale = 0.7 + Math.random() * 0.5;
+        const tree = createDeciduousTree(scale);
+        tree.position.set(x + (Math.random() - 0.5) * 3, y, z + (Math.random() - 0.5) * 3);
+        scene.add(tree);
+    }
+
+    // Shrubs along paths and buildings
+    for (let i = 0; i < 120; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const r = 25 + Math.random() * 20;
+        const shrub = createShrub(
+            Math.random() > 0.5 ? 0x3a6828 : 0x4a7838
+        );
+        shrub.position.set(
+            Math.cos(angle) * r + (Math.random() - 0.5) * 3,
+            0,
+            Math.sin(angle) * r + (Math.random() - 0.5) * 3
+        );
+        scene.add(shrub);
+    }
+
+    // Flower patches in sensory gardens
+    const flowerColors = [0xcc4466, 0xeebb33, 0xbb55cc, 0xff8844, 0x55aa88, 0xdd6699, 0x7799dd];
+    for (let i = 0; i < 80; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const r = 5 + Math.random() * 18;
+        const x = Math.cos(angle) * r;
+        const z = Math.sin(angle) * r - 5;
+
+        const color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+        const flowerMat = new THREE.MeshStandardMaterial({ color, roughness: 0.7 });
+
+        for (let f = 0; f < 3; f++) {
+            const fGeo = new THREE.SphereGeometry(0.08 + Math.random() * 0.06, 5, 4);
+            const flower = new THREE.Mesh(fGeo, flowerMat);
+            flower.position.set(
+                x + (Math.random() - 0.5) * 0.5,
+                0.08 + Math.random() * 0.1,
+                z + (Math.random() - 0.5) * 0.5
+            );
+            scene.add(flower);
+        }
+        const stemMat = new THREE.MeshStandardMaterial({ color: 0x447733, roughness: 0.85 });
+        const stemGeo = new THREE.CylinderGeometry(0.01, 0.015, 0.15, 4);
+        const stem = new THREE.Mesh(stemGeo, stemMat);
+        stem.position.set(x, 0.075, z);
+        scene.add(stem);
+    }
+}
+
+// ============================================================
+// MODULE 9: PATHS, WATER, DETAILS
+// ============================================================
+function createPaths() {
+    updateLoading(70, 'Creating paths and gardens...');
+
+    const PY = 0.25; // Path Y height - well above flat ground (y=0)
+    const pathMat = new THREE.MeshStandardMaterial({ color: 0xCCBBAA, roughness: 0.88, metalness: 0.0 });
+    const pathEdgeMat = new THREE.MeshStandardMaterial({ color: 0xA89878, roughness: 0.9, metalness: 0.0 });
+    const coveredPathMat = new THREE.MeshStandardMaterial({ color: 0xD4C4A8, roughness: 0.75, metalness: 0.05 });
+
+    // --- HELPER: flat ribbon path between points ---
+    function makePath(x1, z1, x2, z2, width, mat) {
+        const dx = x2-x1, dz = z2-z1;
+        const len = Math.sqrt(dx*dx+dz*dz);
+        const angle = Math.atan2(dx, dz);
+        const geo = new THREE.PlaneGeometry(width, len);
+        geo.rotateX(-Math.PI/2);
+        const m = new THREE.Mesh(geo, mat || pathMat);
+        m.position.set((x1+x2)/2, PY, (z1+z2)/2);
+        m.rotation.y = angle;
+        m.receiveShadow = true;
+        scene.add(m);
+        return m;
+    }
+
+    // --- HELPER: arc path (partial ring) ---
+    function makeArcPath(cx, cz, radius, width, startA, endA, segs, mat) {
+        const n = segs || 60;
+        const pos = [], idx = [], nrm = [];
+        for (let i = 0; i <= n; i++) {
+            const t = i/n;
+            const a = startA + (endA - startA) * t;
+            const px = cx + Math.cos(a) * radius;
+            const pz = cz + Math.sin(a) * radius;
+            const nx = Math.cos(a), nz = Math.sin(a);
+            pos.push(px + nx*width/2, PY, pz + nz*width/2);
+            pos.push(px - nx*width/2, PY, pz - nz*width/2);
+            nrm.push(0,1,0, 0,1,0);
+            if (i < n) { const b=i*2; idx.push(b,b+1,b+2, b+1,b+3,b+2); }
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+        geo.setAttribute('normal', new THREE.Float32BufferAttribute(nrm,3));
+        geo.setIndex(idx);
+        const m = new THREE.Mesh(geo, mat || pathMat);
+        m.receiveShadow = true;
+        scene.add(m);
+        return m;
+    }
+
+    // --- HELPER: full circle path ---
+    function makeCirclePath(cx, cz, radius, width, mat) {
+        makeArcPath(cx, cz, radius, width, 0, Math.PI*2, 80, mat);
+    }
+
+    // =====================================================
+    // =====================================================
+    // SIMPLE, CLEAR PATH NETWORK
+    // =====================================================
+
+    // Key locations
+    const gardenCX = 0, gardenCZ = -5;     // Garden center / staff pavilion
+    const dpX = 0, dpZ = 25;               // Day Program
+    const cvX = -55, cvZ = 45;             // Caregiver Village
+    const agX = 35, agZ = -45;             // Agriculture area
+    const cottageR = 38;                    // Cottage arc radius
+    const outerR = 70;                     // Big campus loop radius
+
+    // ---- 1. BIG FULL CIRCLE around entire campus ----
+    // This is the main perimeter walkway connecting EVERYTHING
+    makeCirclePath(0, 10, outerR, 3.0);
+
+    // ---- 2. Inner garden circle around staff pavilion ----
+    makeCirclePath(gardenCX, gardenCZ, 14, 2.0);
+
+    // ---- 3. Path from EACH cottage to inner garden circle ----
+    for (let i = 0; i < 6; i++) {
+        const angle = Math.PI * 0.2 + (Math.PI * 0.6) * (i / 5);
+        const cx = Math.cos(angle) * cottageR;
+        const cz = -Math.sin(angle) * cottageR;
+        const dx = cx - gardenCX, dz = cz - gardenCZ;
+        const d = Math.sqrt(dx*dx + dz*dz);
+        // From cottage porch to garden circle edge
+        makePath(cx - (dx/d)*6, cz - (dz/d)*6, gardenCX + (dx/d)*15, gardenCZ + (dz/d)*15, 1.8);
+    }
+
+    // ---- Helper: find point ON the outer circle closest to a target ----
+    // Outer circle center = (0, 10), radius = 70
+    function onOuterCircle(targetX, targetZ) {
+        const dx = targetX - 0, dz = targetZ - 10;
+        const d = Math.sqrt(dx*dx + dz*dz);
+        return { x: (dx/d) * outerR, z: 10 + (dz/d) * outerR };
+    }
+
+    // ---- 4. Path from EACH cottage THROUGH to outer circle ----
+    for (let i = 0; i < 6; i++) {
+        const angle = Math.PI * 0.2 + (Math.PI * 0.6) * (i / 5);
+        const cx = Math.cos(angle) * cottageR;
+        const cz = -Math.sin(angle) * cottageR;
+        // Point on outer circle in the direction of this cottage from loop center
+        const oc = onOuterCircle(cx, cz);
+        // From behind cottage (away from garden) to outer circle
+        const dx = oc.x - cx, dz = oc.z - cz;
+        const d = Math.sqrt(dx*dx + dz*dz);
+        makePath(cx + (dx/d)*5, cz + (dz/d)*5, oc.x, oc.z, 1.5);
+    }
+
+    // ---- 5. Day Program to garden circle (covered walkway) ----
+    makePath(dpX, dpZ - 6, gardenCX, gardenCZ + 15, 2.0, coveredPathMat);
+
+    // ---- 6. Day Program to outer circle (one path south) ----
+    const dpOuter = onOuterCircle(dpX, dpZ + 10);
+    makePath(dpX, dpZ + 6, dpOuter.x, dpOuter.z, 2.0);
+
+    // ---- 7. Caregiver Village to outer circle ----
+    const cvOuter = onOuterCircle(cvX, cvZ);
+    makePath(cvX, cvZ, cvOuter.x, cvOuter.z, 2.0);
+    // Village internal paths
+    makePath(cvX - 8, cvZ, cvX + 8, cvZ, 1.5);   // A to B
+    makePath(cvX, cvZ, cvX, cvZ + 14, 1.5);        // center to C
+
+    // ---- 8. Agriculture area to outer circle ----
+    const agOuter = onOuterCircle(agX, agZ);
+    makePath(agX, agZ, agOuter.x, agOuter.z, 1.5);
+
+    // ---- 9. Garden circle to Day Program (south spoke) ----
+    makePath(gardenCX, gardenCZ + 15, dpX, dpZ - 6, 1.5);
+
+    // ---- 10. Garden circle to outer circle (north spoke) ----
+    const northOuter = onOuterCircle(0, gardenCZ - 20);
+    makePath(gardenCX, gardenCZ - 15, northOuter.x, northOuter.z, 1.5);
+
+    // DONE - full circle + all spokes reach the circle = zero dead ends
+}
+
+function createWaterFeature() {
+    updateLoading(75, 'Adding water features...');
+
+    // Central water feature
+    const waterGeo = new THREE.CircleGeometry(4, 48);
+    waterGeo.rotateX(-Math.PI / 2);
+    const waterMat = new THREE.MeshPhysicalMaterial({
+        color: 0x4488aa,
+        roughness: 0.05,
+        metalness: 0.1,
+        transmission: 0.6,
+        thickness: 0.5,
+        envMapIntensity: 2.0,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
+    });
+    const water = new THREE.Mesh(waterGeo, waterMat);
+    water.position.set(0, 0.06, -5);
+    water.receiveShadow = true;
+    scene.add(water);
+
+    // Stone border
+    const borderGeo = new THREE.TorusGeometry(4.3, 0.25, 8, 48);
+    borderGeo.rotateX(Math.PI / 2);
+    const borderMat = new THREE.MeshStandardMaterial({ color: 0x8a8a7a, roughness: 0.85 });
+    const border = new THREE.Mesh(borderGeo, borderMat);
+    border.position.set(0, 0.15, -5);
+    border.castShadow = true;
+    scene.add(border);
+
+    // Fountain base
+    const fountainBaseGeo = new THREE.CylinderGeometry(0.5, 0.7, 0.6, 12);
+    const fountainMat = new THREE.MeshStandardMaterial({ color: 0x7a7a6a, roughness: 0.7 });
+    const fountainBase = new THREE.Mesh(fountainBaseGeo, fountainMat);
+    fountainBase.position.set(0, 0.35, -5);
+    fountainBase.castShadow = true;
+    scene.add(fountainBase);
+}
+
+function createBenches() {
+    const benchMat = new THREE.MeshStandardMaterial({ color: 0x6a5a42, roughness: 0.75 });
+    const benchLegMat = new THREE.MeshStandardMaterial({ color: 0x3a3a38, roughness: 0.7, metalness: 0.3 });
+
+    function createBench() {
+        const group = new THREE.Group();
+        const seatGeo = new THREE.BoxGeometry(1.5, 0.06, 0.45);
+        const seat = new THREE.Mesh(seatGeo, benchMat);
+        seat.position.y = 0.45;
+        seat.castShadow = true;
+        seat.receiveShadow = true;
+        group.add(seat);
+
+        const backGeo = new THREE.BoxGeometry(1.5, 0.5, 0.05);
+        const back = new THREE.Mesh(backGeo, benchMat);
+        back.position.set(0, 0.7, -0.2);
+        back.rotation.x = -0.1;
+        back.castShadow = true;
+        group.add(back);
+
+        for (const lx of [-0.6, 0.6]) {
+            const legGeo = new THREE.BoxGeometry(0.04, 0.45, 0.4);
+            const leg = new THREE.Mesh(legGeo, benchLegMat);
+            leg.position.set(lx, 0.225, 0);
+            group.add(leg);
+        }
+        return group;
+    }
+
+    // Benches positioned along pathways - beside paths, facing inward
+    const outerR = 70;
+    const benchPositions = [
+        // Along outer circle (every 60 degrees, offset 2m inside)
+        [Math.cos(0)*67, 0, 10+Math.sin(0)*67, 0],
+        [Math.cos(Math.PI/3)*67, 0, 10+Math.sin(Math.PI/3)*67, Math.PI/3],
+        [Math.cos(2*Math.PI/3)*67, 0, 10+Math.sin(2*Math.PI/3)*67, 2*Math.PI/3],
+        [Math.cos(Math.PI)*67, 0, 10+Math.sin(Math.PI)*67, Math.PI],
+        [Math.cos(4*Math.PI/3)*67, 0, 10+Math.sin(4*Math.PI/3)*67, 4*Math.PI/3],
+        [Math.cos(5*Math.PI/3)*67, 0, 10+Math.sin(5*Math.PI/3)*67, 5*Math.PI/3],
+        // Along garden circle (4 benches facing center)
+        [16, 0, -5, Math.PI/2],    // east of garden
+        [-16, 0, -5, -Math.PI/2],  // west of garden
+        [0, 0, -21, 0],            // north of garden
+        [0, 0, 11, Math.PI],       // south of garden
+    ];
+
+    for (const [x, y, z, ry] of benchPositions) {
+        const bench = createBench();
+        bench.position.set(x, y, z);
+        bench.rotation.y = ry;
+        scene.add(bench);
+    }
+}
+
+function createFencing() {
+    updateLoading(78, 'Installing perimeter details...');
+    // Inner garden fence REMOVED - was blocking cottage pathways
+}
+
+function createLampPosts() {
+    const poleMat = new THREE.MeshStandardMaterial({ color: 0x3a3a38, roughness: 0.5, metalness: 0.4 });
+    const lampMat = new THREE.MeshStandardMaterial({
+        color: 0xffeecc,
+        emissive: 0xffddaa,
+        emissiveIntensity: 0.3,
+        roughness: 0.2,
+    });
+
+    function createLampPost() {
+        const group = new THREE.Group();
+        const poleGeo = new THREE.CylinderGeometry(0.04, 0.06, 3.5, 6);
+        const pole = new THREE.Mesh(poleGeo, poleMat);
+        pole.position.y = 1.75;
+        pole.castShadow = true;
+        group.add(pole);
+
+        const lampGeo = new THREE.SphereGeometry(0.18, 8, 6);
+        const lamp = new THREE.Mesh(lampGeo, lampMat);
+        lamp.position.y = 3.5;
+        group.add(lamp);
+
+        const armGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.4, 4);
+        const arm = new THREE.Mesh(armGeo, poleMat);
+        arm.position.set(0.15, 3.35, 0);
+        arm.rotation.z = Math.PI / 3;
+        group.add(arm);
+
+        return group;
+    }
+
+    const lampPositions = [
+        [20, 0, 15], [-20, 0, 15], [30, 0, -5], [-30, 0, -5],
+        [25, 0, -25], [-25, 0, -25], [10, 0, -30], [-10, 0, -30],
+        [4, 0, 22], [-4, 0, 22],
+        [-48, 0, 38], [-62, 0, 38], [-55, 0, 50],
+    ];
+
+    for (const [x, y, z] of lampPositions) {
+        const lamp = createLampPost();
+        lamp.position.set(x, y, z);
+        scene.add(lamp);
+    }
+}
+
+// ============================================================
+// MODULE 9.5: ANIMAL THERAPY AREA
+// ============================================================
+function createAnimalArea() {
+    updateLoading(80, 'Building animal therapy area...');
+
+    const areaCenter = new THREE.Vector3(35, 0, -45);
+
+    const fenceW = 25, fenceD = 20;
+    const fenceMat = new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.75 });
+    const postHeight = 1.2;
+
+    // Fence posts and rails
+    for (let side = 0; side < 4; side++) {
+        const isX = side < 2;
+        const posSign = side % 2 === 0 ? 1 : -1;
+        const count = isX ? 8 : 6;
+
+        for (let i = 0; i <= count; i++) {
+            const t = i / count;
+            let px, pz;
+            if (isX) {
+                px = areaCenter.x - fenceW / 2 + t * fenceW;
+                pz = areaCenter.z + posSign * fenceD / 2;
+            } else {
+                px = areaCenter.x + posSign * fenceW / 2;
+                pz = areaCenter.z - fenceD / 2 + t * fenceD;
+            }
+
+            const postGeo = new THREE.CylinderGeometry(0.04, 0.05, postHeight, 5);
+            const post = new THREE.Mesh(postGeo, fenceMat);
+            post.position.set(px, postHeight / 2, pz);
+            post.castShadow = true;
+            scene.add(post);
+        }
+
+        const startX = isX ? areaCenter.x - fenceW / 2 : areaCenter.x + posSign * fenceW / 2;
+        const startZ = isX ? areaCenter.z + posSign * fenceD / 2 : areaCenter.z - fenceD / 2;
+        const endX = isX ? areaCenter.x + fenceW / 2 : areaCenter.x + posSign * fenceW / 2;
+        const endZ = isX ? areaCenter.z + posSign * fenceD / 2 : areaCenter.z + fenceD / 2;
+
+        const dx = endX - startX, dz = endZ - startZ;
+        const len = Math.sqrt(dx * dx + dz * dz);
+
+        for (const rh of [0.4, 0.8]) {
+            const railGeo = new THREE.BoxGeometry(len, 0.04, 0.04);
+            const rail = new THREE.Mesh(railGeo, fenceMat);
+            rail.position.set((startX + endX) / 2, rh, (startZ + endZ) / 2);
+            rail.rotation.y = -Math.atan2(dz, dx);
+            scene.add(rail);
+        }
+    }
+
+    // Small barn
+    const barnGroup = new THREE.Group();
+    barnGroup.userData = { name: 'Animal Therapy Barn', sqft: '800 sq ft', type: 'barn' };
+
+    const barnMat = new THREE.MeshStandardMaterial({ color: 0x8b6040, roughness: 0.82 });
+    const barnGeo = new THREE.BoxGeometry(8, 3, 6);
+    const barn = new THREE.Mesh(barnGeo, barnMat);
+    barn.position.y = 1.5;
+    barn.castShadow = true;
+    barn.receiveShadow = true;
+    barnGroup.add(barn);
+
+    const barnRoofMat = new THREE.MeshStandardMaterial({ color: 0x6a3020, roughness: 0.7 });
+    const barnRoofShape = new THREE.Shape();
+    barnRoofShape.moveTo(-4.5, 0);
+    barnRoofShape.lineTo(0, 2.5);
+    barnRoofShape.lineTo(4.5, 0);
+    const barnRoofGeo = new THREE.ExtrudeGeometry(barnRoofShape, { depth: 7, bevelEnabled: false });
+    const barnRoof = new THREE.Mesh(barnRoofGeo, barnRoofMat);
+    barnRoof.position.set(0, 3, -3.5);
+    barnRoof.castShadow = true;
+    barnGroup.add(barnRoof);
+
+    const barnGableShape = new THREE.Shape();
+    barnGableShape.moveTo(-4, 0); barnGableShape.lineTo(0, 2.5); barnGableShape.lineTo(4, 0);
+    const barnGableGeo = new THREE.ShapeGeometry(barnGableShape);
+    const gF = new THREE.Mesh(barnGableGeo, barnMat);
+    gF.position.set(0, 3, 3.01);
+    barnGroup.add(gF);
+    const gB = new THREE.Mesh(barnGableGeo, barnMat);
+    gB.position.set(0, 3, -3.01);
+    gB.rotation.y = Math.PI;
+    barnGroup.add(gB);
+
+    const barnDoorGeo = new THREE.PlaneGeometry(2.5, 2.5);
+    const barnDoorMat = new THREE.MeshStandardMaterial({ color: 0x5a3018, roughness: 0.6 });
+    const barnDoor = new THREE.Mesh(barnDoorGeo, barnDoorMat);
+    barnDoor.position.set(0, 1.25, 3.02);
+    barnGroup.add(barnDoor);
+
+    barnGroup.position.set(areaCenter.x + 5, 0, areaCenter.z - 5);
+    scene.add(barnGroup);
+    buildingMeshes.push(barnGroup);
+}
+
+// ============================================================
+// MODULE 11: CAMERA PRESETS
+// ============================================================
+const cameraPresets = {
+    overview: { pos: [110, 75, 120], target: [0, 2, 0] },
+    residential: { pos: [25, 18, 15], target: [0, 2, -15] },
+    gardens: { pos: [12, 8, 5], target: [0, 1, -5] },
+    village: { pos: [-35, 20, 55], target: [-55, 2, 45] },
+};
+
+function animateCamera(preset, duration = 1500) {
+    const start = {
+        pos: camera.position.clone(),
+        target: controls.target.clone()
+    };
+    const end = {
+        pos: new THREE.Vector3(...preset.pos),
+        target: new THREE.Vector3(...preset.target)
+    };
+
+    const startTime = performance.now();
+
+    function update() {
+        const elapsed = performance.now() - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        camera.position.lerpVectors(start.pos, end.pos, ease);
+        controls.target.lerpVectors(start.target, end.target, ease);
+        controls.update();
+
+        if (t < 1) requestAnimationFrame(update);
+    }
+    update();
+}
+
+// ============================================================
+// TIME OF DAY
+// ============================================================
+function setTimeOfDay(timeKey) {
+    switch (timeKey) {
+        case 'morning':
+            sun.position.set(50, 25, 40);
+            sun.color.setHex(0xffd4a0);
+            sun.intensity = 2.0;
+            renderer.toneMappingExposure = 0.9;
+            scene.fog.color.setHex(0xd8e0d0);
+            hemiLight.color.setHex(0x99aacc);
+            hemiLight.groundColor.setHex(0x556b2f);
+            break;
+        case 'golden':
+            sun.position.set(40, 35, 25);
+            sun.color.setHex(0xffe4b5);
+            sun.intensity = 2.5;
+            renderer.toneMappingExposure = 1.0;
+            scene.fog.color.setHex(0xc8d8c0);
+            hemiLight.color.setHex(0x87ceeb);
+            hemiLight.groundColor.setHex(0x556b2f);
+            break;
+        case 'midday':
+            sun.position.set(10, 60, 10);
+            sun.color.setHex(0xffffff);
+            sun.intensity = 2.8;
+            renderer.toneMappingExposure = 0.85;
+            scene.fog.color.setHex(0xd0e0e8);
+            hemiLight.color.setHex(0x88bbee);
+            hemiLight.groundColor.setHex(0x446622);
+            break;
+    }
+}
+
+// ============================================================
+// LOADING HELPERS
+// ============================================================
+function updateLoading(percent, text) {
+    progressBar.style.width = percent + '%';
+    loadingText.textContent = text;
+}
+
+function hideLoading() {
+    updateLoading(100, 'Ready');
+    setTimeout(() => {
+        loadingScreen.classList.add('fade-out');
+        setTimeout(() => { loadingScreen.style.display = 'none'; }, 800);
+    }, 300);
+}
+
+// ============================================================
+// RAYCASTER FOR BUILDING LABELS
+// ============================================================
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function onMouseMove(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    let found = null;
+    for (const group of buildingMeshes) {
+        const children = [];
+        group.traverse(child => { if (child.isMesh) children.push(child); });
+        const intersects = raycaster.intersectObjects(children);
+        if (intersects.length > 0) {
+            found = group;
+            break;
+        }
+    }
+
+    if (found && found.userData.name) {
+        buildingLabel.style.display = 'block';
+        buildingLabel.textContent = found.userData.name + (found.userData.sqft ? ' - ' + found.userData.sqft : '');
+        buildingLabel.style.left = event.clientX + 'px';
+        buildingLabel.style.top = event.clientY + 'px';
+        document.body.style.cursor = 'pointer';
+    } else {
+        buildingLabel.style.display = 'none';
+        document.body.style.cursor = 'default';
+    }
+}
+
+// ============================================================
+// ANIMATION LOOP
+// ============================================================
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    composer.render();
+}
+
+// ============================================================
+// WINDOW RESIZE
+// ============================================================
+function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+}
+
+// ============================================================
+// UI EVENT HANDLERS
+// ============================================================
+function initUI() {
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const view = btn.dataset.view;
+            if (cameraPresets[view]) {
+                animateCamera(cameraPresets[view]);
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        });
+    });
+
+    document.querySelectorAll('.time-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            setTimeOfDay(btn.dataset.time);
+            document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    window.addEventListener('keydown', (e) => {
+        const keys = { '1': 'overview', '2': 'residential', '3': 'gardens', '4': 'village' };
+        if (keys[e.key]) {
+            animateCamera(cameraPresets[keys[e.key]]);
+        }
+        if (e.key === 'r' || e.key === 'R') {
+            animateCamera(cameraPresets.overview);
+        }
+    });
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('resize', onResize);
+}
+
+// ============================================================
+// MAIN INIT
+// ============================================================
+async function init() {
+    updateLoading(2, 'Setting up renderer...');
+    initRenderer();
+    initScene();
+    initControls();
+
+    await loadEnvironment();
+
+    initLighting();
+    initPostProcessing();
+
+    createGround();
+    buildCampus();
+    createVegetation();
+    createPaths();
+    createWaterFeature();
+    createBenches();
+    createFencing();
+    createLampPosts();
+    createAnimalArea();
+
+    updateLoading(90, 'Finalizing...');
+
+    initUI();
+
+    updateLoading(95, 'Starting render...');
+    animate();
+
+    hideLoading();
+}
+
+init().catch(err => {
+    console.error('Initialization failed:', err);
+    loadingText.textContent = 'Error: ' + err.message;
+});
+
+</script>
+</body>
+</html>
