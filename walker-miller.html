@@ -1,0 +1,2470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Powered Administrative Training | Project Baseline x Walker-Miller Energy Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+:root {
+    --red: #E31B23;
+    --red-dark: #B8151B;
+    --red-glow: rgba(227, 27, 35, 0.25);
+    --black: #1A1A1A;
+    --black-deep: #0D0D0D;
+    --white: #FFFFFF;
+    --gray: #808080;
+    --gray-light: #B0B0B0;
+    --gray-lighter: #E8E8E8;
+    --cream: #F5F5F2;
+    --font-display: 'Bebas Neue', Impact, sans-serif;
+    --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-accent: 'Playfair Display', Georgia, serif;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--black);
+    background: var(--white);
+    line-height: 1.7;
+    overflow-x: hidden;
+}
+
+/* ===== PROGRESS BAR ===== */
+#progressBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), var(--red-dark));
+    width: 0;
+    z-index: 10001;
+    transition: width 0.1s linear;
+}
+
+/* ===== NAVIGATION ===== */
+nav {
+    position: fixed;
+    top: 3px;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    padding: 1.1rem 2.5rem;
+    background: rgba(26, 26, 26, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.4s ease;
+}
+nav.scrolled {
+    padding: 0.7rem 2.5rem;
+    background: rgba(13, 13, 13, 0.97);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--white);
+    letter-spacing: 2px;
+    text-decoration: none;
+}
+.nav-logo span { color: var(--red); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+    color: var(--gray-light);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-tag {
+    font-size: 0.65rem;
+    color: var(--gray);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal.active { opacity: 1; transform: translateY(0); }
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-left.active { opacity: 1; transform: translateX(0); }
+.reveal-right {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-right.active { opacity: 1; transform: translateX(0); }
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
+.stagger-4 { transition-delay: 0.4s; }
+.stagger-5 { transition-delay: 0.5s; }
+.stagger-6 { transition-delay: 0.6s; }
+
+/* ===== HERO ===== */
+.hero {
+    min-height: 100vh;
+    background: var(--black-deep);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 60% 40%, rgba(227,27,35,0.06) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-badge {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 2rem;
+    padding: 0.5rem 1.5rem;
+    border: 1px solid rgba(227,27,35,0.3);
+    border-radius: 30px;
+}
+.hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    color: var(--white);
+    letter-spacing: 3px;
+    line-height: 1.05;
+    max-width: 900px;
+    margin-bottom: 1.5rem;
+}
+.hero h1 span { color: var(--red); }
+.hero-sub {
+    font-family: var(--font-accent);
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--gray-light);
+    max-width: 680px;
+    line-height: 1.6;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 3rem;
+}
+.hero-logos {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3.5rem;
+}
+.hero-logos .logo-text {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: var(--white);
+}
+.hero-logos .logo-text span { color: var(--red); }
+.hero-logos .divider {
+    width: 1px;
+    height: 30px;
+    background: var(--gray);
+}
+.hero-logos .partner-name {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--gray-light);
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+.scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+.scroll-indicator span {
+    font-size: 0.65rem;
+    color: var(--gray);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.scroll-arrow {
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--red);
+    border-bottom: 2px solid var(--red);
+    transform: rotate(45deg);
+    animation: bounceDown 2s infinite;
+}
+@keyframes bounceDown {
+    0%, 100% { transform: rotate(45deg) translateY(0); }
+    50% { transform: rotate(45deg) translateY(6px); }
+}
+
+/* ===== SECTION BASE ===== */
+section { padding: 6rem 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1rem;
+}
+.section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+    letter-spacing: 2px;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+.section-subtitle {
+    font-family: var(--font-accent);
+    font-size: 1.15rem;
+    color: var(--gray);
+    font-style: italic;
+    max-width: 650px;
+    margin-bottom: 2.5rem;
+}
+
+/* ===== THE STORY (DARK) ===== */
+.story-section {
+    background: var(--black-deep);
+    color: var(--white);
+    padding: 7rem 2rem;
+}
+.story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-bottom: 4rem;
+}
+.story-grid.reverse { direction: rtl; }
+.story-grid.reverse > * { direction: ltr; }
+.story-text h3 {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    color: var(--white);
+}
+.story-text h3 span { color: var(--red); }
+.story-text p {
+    color: var(--gray-light);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+/* ===== DATA STATS ===== */
+.stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}
+.stat-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    border: 1px solid rgba(227,27,35,0.15);
+    border-radius: 12px;
+    background: rgba(227,27,35,0.03);
+    transition: all 0.3s;
+}
+.stat-card:hover {
+    border-color: var(--red);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(227,27,35,0.1);
+}
+.stat-number {
+    font-family: var(--font-display);
+    font-size: 3.2rem;
+    color: var(--red);
+    letter-spacing: 1px;
+    line-height: 1;
+}
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+.stat-source {
+    font-size: 0.65rem;
+    color: var(--gray);
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* ===== EMPOWERMENT CHAIN ===== */
+.chain-section {
+    background: var(--black);
+    padding: 7rem 2rem;
+    overflow: hidden;
+}
+.chain-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+.chain-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--white);
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+.chain-title span { color: var(--red); }
+.chain-subtitle {
+    font-family: var(--font-accent);
+    font-size: 1.1rem;
+    color: var(--gray-light);
+    font-style: italic;
+    margin-bottom: 4rem;
+}
+.chain-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 3rem auto;
+    max-width: 900px;
+}
+.chain-node {
+    flex: 0 0 220px;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.chain-node.lit {
+    opacity: 1;
+    transform: scale(1);
+}
+.chain-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+    font-size: 2.8rem;
+    transition: all 0.5s;
+    position: relative;
+}
+.chain-node:nth-child(1) .chain-icon {
+    background: rgba(227,27,35,0.1);
+    border: 2px solid rgba(227,27,35,0.3);
+    color: var(--red);
+}
+.chain-node:nth-child(1).lit .chain-icon {
+    background: rgba(227,27,35,0.15);
+    border-color: var(--red);
+    box-shadow: 0 0 30px rgba(227,27,35,0.2);
+}
+.chain-node:nth-child(3) .chain-icon {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.15);
+    color: var(--white);
+}
+.chain-node:nth-child(3).lit .chain-icon {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--white);
+    box-shadow: 0 0 30px rgba(255,255,255,0.1);
+}
+.chain-node:nth-child(5) .chain-icon {
+    background: rgba(46,204,113,0.1);
+    border: 2px solid rgba(46,204,113,0.3);
+    color: #2ecc71;
+}
+.chain-node:nth-child(5).lit .chain-icon {
+    background: rgba(46,204,113,0.15);
+    border-color: #2ecc71;
+    box-shadow: 0 0 30px rgba(46,204,113,0.2);
+}
+.chain-node-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--white);
+    letter-spacing: 1.5px;
+    margin-bottom: 0.4rem;
+}
+.chain-node-desc {
+    font-size: 0.8rem;
+    color: var(--gray);
+    line-height: 1.5;
+    max-width: 180px;
+    margin: 0 auto;
+}
+.chain-connector {
+    flex: 0 0 80px;
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+}
+.chain-connector .energy-flow {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+    transition: left 0s;
+}
+.chain-connector.flowing .energy-flow {
+    animation: flowEnergy 1.5s ease-in-out infinite;
+}
+@keyframes flowEnergy {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+.chain-callouts {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
+    margin-top: 4rem;
+    text-align: left;
+}
+.chain-callout {
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+}
+.chain-callout h4 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--red);
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+.chain-callout p {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    line-height: 1.6;
+}
+
+/* ===== PROBLEM SECTION (LIGHT) ===== */
+.problem-section {
+    background: var(--cream);
+    padding: 7rem 2rem;
+}
+.problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+}
+.problem-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 2.5rem;
+    border: 1px solid var(--gray-lighter);
+    transition: all 0.3s;
+}
+.problem-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+    border-color: var(--red);
+}
+.problem-card .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+.problem-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+    color: var(--black);
+}
+.problem-card p {
+    font-size: 0.95rem;
+    color: var(--gray);
+    line-height: 1.7;
+}
+.problem-card .highlight-stat {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--red);
+    display: block;
+    margin: 0.8rem 0;
+}
+
+/* ===== SOLUTION SECTION ===== */
+.solution-section {
+    background: var(--white);
+    padding: 7rem 2rem;
+}
+.solution-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    margin-top: 2.5rem;
+}
+.solution-text p {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
+}
+.solution-pillars {
+    display: grid;
+    gap: 1.2rem;
+}
+.pillar {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.2rem;
+    border-radius: 10px;
+    border: 1px solid var(--gray-lighter);
+    transition: all 0.3s;
+}
+.pillar:hover {
+    border-color: var(--red);
+    background: rgba(227,27,35,0.02);
+}
+.pillar-num {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--red);
+    line-height: 1;
+    flex-shrink: 0;
+}
+.pillar h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: var(--black);
+}
+.pillar p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.5;
+}
+
+/* ===== DOL BADGE ===== */
+.dol-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    background: rgba(227,27,35,0.05);
+    border: 1px solid rgba(227,27,35,0.15);
+    margin-top: 1.5rem;
+}
+.dol-badge .badge-icon { font-size: 1.3rem; }
+.dol-badge .badge-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--black);
+}
+
+/* ===== CURRICULUM SECTION ===== */
+.curriculum-section {
+    background: var(--black-deep);
+    color: var(--white);
+    padding: 7rem 2rem;
+}
+.tab-bar {
+    display: flex;
+    gap: 0;
+    margin-bottom: 3rem;
+    border-bottom: 2px solid rgba(255,255,255,0.08);
+}
+.tab-btn {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    color: var(--gray);
+    background: none;
+    border: none;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.3s;
+}
+.tab-btn:hover { color: var(--gray-light); }
+.tab-btn.active {
+    color: var(--white);
+    border-bottom-color: var(--red);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.curriculum-day {
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.02);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.curriculum-day:hover {
+    border-color: rgba(227,27,35,0.3);
+}
+.curriculum-day.expanded {
+    border-color: var(--red);
+    background: rgba(227,27,35,0.03);
+}
+.day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+}
+.day-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+.day-num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--red);
+    letter-spacing: 1px;
+    line-height: 1;
+}
+.day-info h3 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--white);
+    letter-spacing: 1.5px;
+}
+.day-info p {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 0.2rem;
+}
+.day-arrow {
+    font-size: 0.9rem;
+    color: var(--gray);
+    transition: transform 0.3s;
+}
+.curriculum-day.expanded .day-arrow {
+    transform: rotate(180deg);
+    color: var(--red);
+}
+.day-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.curriculum-day.expanded .day-details {
+    max-height: 800px;
+}
+.day-details-inner {
+    padding: 0 2rem 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.session-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.session-item:last-child { border-bottom: none; }
+.session-item h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+}
+.session-item .session-time {
+    font-size: 0.75rem;
+    color: var(--red);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+.session-item p {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    line-height: 1.6;
+}
+.session-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-right: 0.4rem;
+    margin-top: 0.4rem;
+}
+.tag-hands-on { background: rgba(46,204,113,0.15); color: #2ecc71; }
+.tag-lecture { background: rgba(52,152,219,0.15); color: #3498db; }
+.tag-assessment { background: rgba(155,89,182,0.15); color: #9b59b6; }
+
+/* Walk-away box */
+.walkaway-box {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(227,27,35,0.2);
+    background: rgba(227,27,35,0.04);
+}
+.walkaway-box h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--red);
+    letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+}
+.walkaway-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    list-style: none;
+}
+.walkaway-list li {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    padding-left: 1.2rem;
+    position: relative;
+    line-height: 1.5;
+}
+.walkaway-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+}
+
+/* ===== ABOUT SECTION ===== */
+.about-section {
+    background: var(--white);
+    padding: 7rem 2rem;
+}
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    margin-top: 2.5rem;
+}
+.about-text p {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
+}
+.credential-cards {
+    display: grid;
+    gap: 1rem;
+}
+.credential-card {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem 1.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--gray-lighter);
+    transition: all 0.3s;
+}
+.credential-card:hover {
+    border-color: var(--red);
+    transform: translateX(4px);
+}
+.credential-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+.credential-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.2rem;
+}
+.credential-card p {
+    font-size: 0.8rem;
+    color: var(--gray);
+    line-height: 1.4;
+}
+
+/* ===== PARTNERSHIP ===== */
+.partnership-section {
+    background: var(--cream);
+    padding: 6rem 2rem;
+}
+.partnership-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+.partnership-card {
+    padding: 2rem;
+    border-radius: 12px;
+    background: var(--white);
+    border: 1px solid var(--gray-lighter);
+    transition: all 0.3s;
+}
+.partnership-card:hover {
+    border-color: var(--red);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+}
+.partnership-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.6rem;
+    color: var(--black);
+}
+.partnership-card p {
+    font-size: 0.9rem;
+    color: var(--gray);
+    line-height: 1.7;
+}
+
+/* ===== INVESTMENT / PRICING ===== */
+.investment-section {
+    background: var(--black-deep);
+    color: var(--white);
+    padding: 7rem 2rem;
+}
+.investment-intro {
+    font-size: 1rem;
+    color: var(--gray-light);
+    max-width: 700px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+}
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+.pricing-card {
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 2.5rem 2rem;
+    background: rgba(255,255,255,0.02);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+.pricing-card:hover {
+    border-color: var(--red);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(227,27,35,0.1);
+}
+.pricing-card.featured {
+    border-color: var(--red);
+    background: rgba(227,27,35,0.04);
+}
+.pricing-card.featured::before {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--red);
+    color: var(--white);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 0.4rem;
+}
+.pricing-card.featured { padding-top: 3.5rem; }
+.pricing-tier {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+}
+.pricing-range {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--red);
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+.pricing-desc {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pricing-includes {
+    list-style: none;
+}
+.pricing-includes li {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.pricing-includes li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+}
+.pricing-note {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--gray);
+    font-style: italic;
+    margin-top: 1.5rem;
+}
+
+/* ===== ENGAGEMENT PHASES ===== */
+.phases-section {
+    background: var(--white);
+    padding: 7rem 2rem;
+}
+.phase-timeline {
+    margin-top: 3rem;
+    position: relative;
+    padding-left: 3rem;
+}
+.phase-timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--gray-lighter);
+}
+.phase-item {
+    position: relative;
+    padding-bottom: 3rem;
+}
+.phase-item:last-child { padding-bottom: 0; }
+.phase-dot {
+    position: absolute;
+    left: -3rem;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: transparent;
+    border: 3px solid var(--gray-lighter);
+    z-index: 2;
+    transition: all 0.5s ease;
+}
+.phase-dot.active {
+    background: var(--red);
+    border-color: var(--red);
+    box-shadow: 0 0 18px rgba(227, 27, 35, 0.5), 0 0 6px rgba(227, 27, 35, 0.3);
+}
+.phase-progress-line {
+    position: absolute;
+    left: 12px;
+    top: 0;
+    width: 2px;
+    height: 0;
+    background: var(--red);
+    z-index: 1;
+    transition: height 0.2s ease;
+}
+.phase-item h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.3rem;
+    color: var(--black);
+}
+.phase-meta {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--red);
+    margin-bottom: 0.6rem;
+}
+.phase-item p {
+    font-size: 0.95rem;
+    color: var(--gray);
+    line-height: 1.7;
+    margin-bottom: 0.5rem;
+}
+.phase-deliverables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+.phase-deliverable {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--black);
+    background: var(--cream);
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+}
+
+/* ===== CTA / NEXT STEPS ===== */
+.cta-section {
+    background: var(--black-deep);
+    color: var(--white);
+    padding: 7rem 2rem;
+    text-align: center;
+}
+.cta-section .section-title { color: var(--white); }
+.cta-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin: 3rem auto;
+    max-width: 900px;
+}
+.cta-step {
+    text-align: center;
+    padding: 1.5rem;
+}
+.step-num {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 0.8rem;
+}
+.cta-step h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+}
+.cta-step p {
+    font-size: 0.8rem;
+    color: var(--gray);
+    line-height: 1.5;
+}
+.cta-closing {
+    font-family: var(--font-accent);
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--gray-light);
+    max-width: 700px;
+    margin: 3rem auto 0;
+    line-height: 1.7;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background: var(--black);
+    padding: 3rem 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+footer .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--white);
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+footer .footer-logo span { color: var(--red); }
+footer p {
+    font-size: 0.75rem;
+    color: var(--gray);
+    line-height: 1.6;
+}
+footer .confidential {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.7rem;
+    color: var(--gray);
+    font-style: italic;
+}
+
+/* ===== SCROLL-DRIVEN CHAIN ===== */
+.scroll-drive-container { height: 350vh; position: relative; background: var(--black-deep); }
+.scroll-drive-inner { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+#chainCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.chain-title-overlay { position: absolute; top: 5rem; left: 0; right: 0; text-align: center; z-index: 10; pointer-events: none; }
+.chain-title-overlay h2 { font-family: var(--font-display); font-size: clamp(1.6rem, 3.5vw, 2.6rem); color: var(--white); letter-spacing: 2px; }
+.chain-title-overlay h2 span { color: var(--red); }
+.chain-title-overlay p { font-family: var(--font-accent); font-size: 0.95rem; color: var(--gray); font-style: italic; margin-top: 0.3rem; }
+.stage-text { position: absolute; bottom: 4rem; left: 4rem; z-index: 10; pointer-events: none; max-width: 360px; }
+.stage-item { position: absolute; bottom: 0; left: 0; opacity: 0; transform: translateY(15px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.stage-item.active { opacity: 1; transform: translateY(0); }
+.stage-counter { font-family: var(--font-display); font-size: 3rem; color: var(--red); letter-spacing: 2px; line-height: 1; margin-bottom: 0.3rem; }
+.stage-label-text { font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--red); margin-bottom: 0.3rem; }
+.stage-desc { font-size: 0.9rem; color: var(--gray-light); line-height: 1.6; }
+.scroll-hint-text { position: absolute; bottom: 2rem; right: 3rem; z-index: 10; font-size: 0.6rem; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; pointer-events: none; transition: opacity 0.3s; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .nav-links { display: none; }
+    .story-grid, .story-grid.reverse { grid-template-columns: 1fr; direction: ltr; }
+    .story-grid.reverse > * { direction: ltr; }
+    .solution-content { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .partnership-cards { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .cta-steps { grid-template-columns: 1fr 1fr; }
+    .stage-text { left: 50%; transform: translateX(-50%); bottom: auto; top: 75%; max-width: 340px; text-align: center; width: 90%; height: 120px; }
+    .stage-item { left: 0; right: 0; bottom: auto; top: 0; width: 100%; text-align: center; }
+    .walkaway-list { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    section { padding: 4rem 1.2rem; }
+    nav { padding: 0.8rem 1.2rem; }
+    .cta-steps { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .stage-text { top: 75%; max-width: 90%; }
+    .stage-counter { font-size: 2rem; }
+    .stage-desc { font-size: 0.75rem; }
+    .scroll-drive-container { height: 300vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="progressBar"></div>
+
+<!-- NAVIGATION -->
+<nav id="mainNav">
+    <a href="#" class="nav-logo"><span>P</span>B</a>
+    <ul class="nav-links">
+        <li><a href="#story">The Story</a></li>
+        <li><a href="#solution">Approach</a></li>
+        <li><a href="#curriculum">Curriculum</a></li>
+        <li><a href="#investment">Investment</a></li>
+        <li><a href="#next">Next Steps</a></li>
+    </ul>
+    <span class="nav-tag">Confidential Proposal</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-badge reveal stagger-1">Workforce Development x Artificial Intelligence</div>
+    <h1 class="reveal stagger-2">AI-POWERED <span>ADMINISTRATIVE</span> TRAINING FOR CLEAN ENERGY</h1>
+    <p class="hero-sub reveal stagger-3">A hands-on curriculum that equips Walker-Miller's support professionals with practical AI skills, turning administrative bottlenecks into competitive advantages.</p>
+    <div class="hero-logos reveal stagger-4">
+        <div class="logo-text"><span>P</span>ROJECT <span>B</span>ASELINE</div>
+        <div class="divider"></div>
+        <div class="partner-name">Walker-Miller Energy Services</div>
+    </div>
+    <div class="scroll-indicator">
+        <span>Scroll to explore</span>
+        <div class="scroll-arrow"></div>
+    </div>
+</section>
+
+<!-- THE STORY -->
+<section class="story-section" id="story">
+    <div class="section-inner">
+        <div class="section-label reveal">The Story</div>
+        <div class="section-title reveal stagger-1" style="color:var(--white);">CLEAN ENERGY CONTRACTORS ARE <span style="color:var(--red)">WORLD-CLASS</span> BUILDERS</div>
+        <div class="section-subtitle reveal stagger-2">But administrative complexity is holding them back.</div>
+
+        <!-- Story Block 1 -->
+        <div class="story-grid">
+            <div class="story-text reveal-left">
+                <h3>THE <span>SKILLED TRADES</span> PROBLEM</h3>
+                <p>Walker-Miller's contractors are among the best in the industry. They weatherize homes, install high-efficiency systems, and deliver measurable energy savings across programs for DTE Energy, ComEd, Ameren, and Consumers Energy.</p>
+                <p>But every completed job generates a trail of invoicing, rebate documentation, compliance reporting, and program-specific paperwork that varies by utility, by state, and by incentive structure.</p>
+            </div>
+            <div class="reveal-right">
+                <div class="stat-row" style="margin:0;">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="850" data-suffix="+">0</div>
+                        <div class="stat-label">Hours per year contractors spend on admin</div>
+                        <div class="stat-source">Businessingmag.com</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="63750" data-prefix="$" data-suffix="">0</div>
+                        <div class="stat-label">Lost revenue per year in unbilled hours</div>
+                        <div class="stat-source">At $75/hr billable rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Block 2 -->
+        <div class="story-grid reverse" style="margin-top: 4rem;">
+            <div class="story-text reveal-right">
+                <h3>THE <span>FAILURE</span> ISN'T SKILL</h3>
+                <p>96% of contractors fail before reaching 10 years. The number one reason isn't bad work. It's bad admin: cash flow problems, late invoicing, missed follow-ups, no systems. Meanwhile, 97% of customers search online for contractors, but 27% of contractors have no website at all. That's not a gap. That's a canyon.</p>
+            </div>
+            <div class="reveal-left">
+                <div class="stat-row" style="margin:0;">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="96" data-suffix="%">0</div>
+                        <div class="stat-label">Of contractors fail before year 10</div>
+                        <div class="stat-source">US Dept. of Commerce</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="78" data-suffix="%">0</div>
+                        <div class="stat-label">Of buyers choose the first company that responds</div>
+                        <div class="stat-source">Contractor Accelerator</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Block 3: The Clean Energy Angle -->
+        <div class="story-grid" style="margin-top: 4rem;">
+            <div class="story-text reveal-left">
+                <h3>THE <span>CLEAN ENERGY</span> BOTTLENECK</h3>
+                <p>$8.8 billion in IRA home energy rebates have been allocated. Only 11 states are accepting applications. Each rebate application takes 30-45 minutes to process manually. 10-15% are rejected for late submissions or missing documentation, delaying payment by 4-8 weeks.</p>
+                <p>The bottleneck isn't money. It isn't talent. It's paperwork. It's the administrative machinery that keeps the clean energy workforce running.</p>
+            </div>
+            <div class="reveal-right">
+                <div class="stat-row" style="margin:0;">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="8.8" data-prefix="$" data-suffix="B">0</div>
+                        <div class="stat-label">In IRA rebates allocated</div>
+                        <div class="stat-source">DOE / NC Clean Energy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="11" data-suffix="">0</div>
+                        <div class="stat-label">States actually accepting rebate applications</div>
+                        <div class="stat-source">As of March 2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- THE EMPOWERMENT CHAIN (SCROLL-DRIVEN VISUALIZATION) -->
+<div class="scroll-drive-container" id="chain">
+    <div class="scroll-drive-inner">
+        <canvas id="chainCanvas"></canvas>
+        <div class="chain-title-overlay" id="chainTitle">
+            <h2>POWERING THE WORKFORCE THAT <span>POWERS CLEAN ENERGY</span></h2>
+            <p>Scroll to see the multiplier effect</p>
+        </div>
+        <div class="stage-text" id="stageText">
+            <div class="stage-item" data-stage="0">
+                <div class="stage-label-text">THE CLEAN ENERGY CONTRACTOR</div>
+                <div class="stage-counter">~5 Clients</div>
+                <div class="stage-desc">Without support, a contractor spends 850+ hours a year on admin instead of building. Capacity stays limited.</div>
+            </div>
+            <div class="stage-item" data-stage="1">
+                <div class="stage-label-text">+ ADMINISTRATIVE SUPPORT</div>
+                <div class="stage-counter">~12 Clients</div>
+                <div class="stage-desc">A trained admin professional handles invoicing, rebates, marketing, and compliance. The contractor focuses on what they do best.</div>
+            </div>
+            <div class="stage-item" data-stage="2">
+                <div class="stage-label-text">+ AI-POWERED TRAINING</div>
+                <div class="stage-counter">25+ Clients</div>
+                <div class="stage-desc">AI multiplies the admin professional's output by 3-5x. The entire ecosystem powers up. Growth becomes exponential.</div>
+            </div>
+        </div>
+        <div class="scroll-hint-text" id="scrollHint">Scroll to continue &#8595;</div>
+    </div>
+</div>
+
+<!-- THE PROBLEM (LIGHT) -->
+<section class="problem-section">
+    <div class="section-inner">
+        <div class="section-label reveal">Why Now</div>
+        <div class="section-title reveal stagger-1">THE AI OPPORTUNITY IS <span style="color:var(--red)">RIGHT NOW</span></div>
+        <div class="section-subtitle reveal stagger-2">The federal government is investing billions in exactly this kind of training.</div>
+
+        <div class="problem-grid">
+            <div class="problem-card reveal stagger-1">
+                <div class="card-icon">&#127891;</div>
+                <h3>DOL AI LITERACY FRAMEWORK</h3>
+                <p>In February 2026, the Department of Labor released its national AI Literacy Framework (TEN 07-25), establishing workforce AI training as a national priority. Our curriculum aligns directly with its five content areas and seven delivery principles.</p>
+            </div>
+            <div class="problem-card reveal stagger-2">
+                <div class="card-icon">&#128176;</div>
+                <h3>$224M IN FEDERAL AI TRAINING FUNDS</h3>
+                <p>TechAccess: AI-Ready America (NSF + DOL) is deploying $224 million across 56 state hubs. The DOL Registered Apprenticeship AI Integration initiative is actively accepting proposals through April 17, 2026. WIOA funding is eligible for AI skills training.</p>
+            </div>
+            <div class="problem-card reveal stagger-3">
+                <div class="card-icon">&#128200;</div>
+                <h3>41% REVENUE INCREASE</h3>
+                <p>Small businesses using AI tools report 41% revenue growth versus only 2% reporting revenue declines. Contractors adopting automation complete 40% more jobs in the same hours. Same crew, same skills, different systems.</p>
+                <div class="stat-source" style="color:var(--gray);">QuickBooks April 2025 Survey / ProValet</div>
+            </div>
+            <div class="problem-card reveal stagger-4">
+                <div class="card-icon">&#9201;</div>
+                <h3>THE WINDOW IS OPEN</h3>
+                <p>68% of small businesses now use AI regularly, up from 48% in July 2024. The gap between companies that train their workforce on AI and those that don't is widening every quarter. Walker-Miller's existing workforce development model is perfectly positioned to lead this shift.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OUR APPROACH / SOLUTION -->
+<section class="solution-section" id="solution">
+    <div class="section-inner">
+        <div class="section-label reveal">Our Approach</div>
+        <div class="section-title reveal stagger-1">LEARNING BY DOING, NOT BY <span style="color:var(--red)">WATCHING</span></div>
+
+        <div class="solution-content">
+            <div class="solution-text">
+                <p class="reveal">This is not a lecture series about what AI can theoretically do. This is a hands-on training curriculum built around the actual tasks Walker-Miller's administrative support professionals perform every day.</p>
+                <p class="reveal stagger-1">Participants will learn by doing: drafting real invoice summaries, processing sample rebate documentation across multiple utility programs, generating compliant reports, and building marketing content that contractors can actually use. Every module is grounded in workflows your team already knows, with AI tools layered in as practical accelerators.</p>
+                <p class="reveal stagger-2">The curriculum is designed for entry-level learners and aligned with the Department of Labor's AI Literacy Framework. We build in responsible use principles from the start, so your team understands not just how to use these tools, but when to trust them, when to verify, and where human judgment stays essential.</p>
+
+                <div class="dol-badge reveal stagger-3">
+                    <span class="badge-icon">&#127891;</span>
+                    <span class="badge-text">Aligned with DOL AI Literacy Framework (TEN 07-25, February 2026)</span>
+                </div>
+            </div>
+
+            <div class="solution-pillars reveal-right">
+                <div class="pillar">
+                    <div class="pillar-num">01</div>
+                    <div>
+                        <h4>Experiential, Not Theoretical</h4>
+                        <p>Every session is at least 60% hands-on. Real tools, real tasks, real clean energy scenarios.</p>
+                    </div>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-num">02</div>
+                    <div>
+                        <h4>Built for Your Workflows</h4>
+                        <p>Exercises use actual utility rebate forms, real invoicing formats, and Walker-Miller's operational context.</p>
+                    </div>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-num">03</div>
+                    <div>
+                        <h4>Entry-Level Accessible</h4>
+                        <p>No prior AI experience required. We start with fundamentals and build progressively.</p>
+                    </div>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-num">04</div>
+                    <div>
+                        <h4>Designed to Evolve</h4>
+                        <p>AI tools change fast. The curriculum teaches adaptive thinking, not just button clicks, so it stays relevant.</p>
+                    </div>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-num">05</div>
+                    <div>
+                        <h4>Responsible Use Built In</h4>
+                        <p>Security, privacy, hallucination detection, and ethical considerations are woven throughout, not bolted on at the end.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="curriculum-section" id="curriculum">
+    <div class="section-inner">
+        <div class="section-label reveal">The Curriculum</div>
+        <div class="section-title reveal stagger-1" style="color:var(--white);">TWO FORMATS, <span style="color:var(--red)">ONE STANDARD</span></div>
+        <div class="section-subtitle reveal stagger-2" style="color:var(--gray-light);">Choose the depth that fits your program. Both deliver real, measurable skill gains.</div>
+
+        <div class="tab-bar reveal stagger-3">
+            <button class="tab-btn active" onclick="switchTab('oneday')">ONE-DAY INTENSIVE</button>
+            <button class="tab-btn" onclick="switchTab('fiveday')">FIVE-DAY PROGRAM</button>
+        </div>
+
+        <!-- ONE-DAY TAB -->
+        <div class="tab-content active" id="tab-oneday">
+            <div class="curriculum-day reveal" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">01</div>
+                        <div class="day-info">
+                            <h3>AI IS YOUR NEW COWORKER</h3>
+                            <p>60 min | Fundamentals and first prompts</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <p>Understand what AI can and cannot do in a clean energy admin context. Navigate the interface of at least two AI tools and complete a basic prompt-response cycle. Identify which daily tasks are strong AI candidates versus tasks requiring human judgment.</p>
+                            <span class="session-tag tag-lecture">Interactive Demo</span>
+                            <span class="session-tag tag-hands-on">Guided Exploration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-1" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">02</div>
+                        <div class="day-info">
+                            <h3>PROMPT ENGINEERING FOR CLEAN ENERGY</h3>
+                            <p>75 min | Writing prompts that produce usable output</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <p>Master the structure of effective prompts: role, context, task, format, constraints. Practice iterative prompting on real administrative tasks. Compare outputs across AI tools (ChatGPT, Claude) on identical prompts.</p>
+                            <span class="session-tag tag-hands-on">Hands-On</span>
+                            <span class="session-tag tag-hands-on">Pair Exercise</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-2" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">03</div>
+                        <div class="day-info">
+                            <h3>AI FOR INVOICING AND REBATE PROCESSING</h3>
+                            <p>75 min | The financial backbone of clean energy admin</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <p>Extract data from sample DTE Energy invoices using AI. Draft rebate submission emails with proper documentation references. Build an AI-assisted tracking system for rebate applications across multiple utility programs (HOMES, HEAR, utility-specific).</p>
+                            <span class="session-tag tag-hands-on">Hands-On</span>
+                            <span class="session-tag tag-hands-on">Real Scenarios</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-3" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">04</div>
+                        <div class="day-info">
+                            <h3>AI FOR MARKETING AND CUSTOMER CONTENT</h3>
+                            <p>75 min | Building the contractor's public face</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <p>Create a month of social media content for a sample contractor using ChatGPT + Canva AI. Write a Google Business Profile optimization using AI-generated descriptions. Build customer-facing energy savings communication templates.</p>
+                            <span class="session-tag tag-hands-on">Hands-On</span>
+                            <span class="session-tag tag-hands-on">Portfolio Piece</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-4" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">05</div>
+                        <div class="day-info">
+                            <h3>SCHEDULING, COMPLIANCE, AND DATA</h3>
+                            <p>60 min | Keeping operations running smooth</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <p>Use AI for multi-party scheduling coordination. Draft BPI certification tracking spreadsheets. Generate compliance documentation templates and data reporting summaries from raw project data.</p>
+                            <span class="session-tag tag-hands-on">Hands-On</span>
+                            <span class="session-tag tag-lecture">Demo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-5" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">06</div>
+                        <div class="day-info">
+                            <h3>CAPSTONE CHALLENGE</h3>
+                            <p>60 min | Prove you're ready</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <p>Complete a full end-to-end task scenario: receive a mock job completion notice, process the invoice, file the rebate, draft the customer follow-up, and create a social media post about the project. All using AI tools. Post-assessment comparison to baseline scores.</p>
+                            <span class="session-tag tag-assessment">Assessment</span>
+                            <span class="session-tag tag-hands-on">Capstone</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="walkaway-box reveal">
+                <h3>WHAT YOU WALK AWAY WITH</h3>
+                <ul class="walkaway-list">
+                    <li>Confident navigation of ChatGPT, Claude, and Canva AI</li>
+                    <li>Prompt engineering skills for admin-specific tasks</li>
+                    <li>AI-assisted invoice and rebate processing capability</li>
+                    <li>Marketing content creation skills with AI tools</li>
+                    <li>Understanding of AI ethics, security, and limitations</li>
+                    <li>Personal resource toolkit for continued learning</li>
+                    <li>Pre/post assessment showing measurable skill growth</li>
+                    <li>Certificate of completion</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FIVE-DAY TAB -->
+        <div class="tab-content" id="tab-fiveday">
+            <div class="curriculum-day reveal" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">DAY 1</div>
+                        <div class="day-info">
+                            <h3>FOUNDATIONS</h3>
+                            <p>"Understanding AI and Your New Industry" | 6.5 hours</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <div class="session-time">9:00 AM - 10:15 AM</div>
+                            <h4>Welcome to the AI Era</h4>
+                            <p>What AI actually is (and isn't), live demonstrations, first prompt-response cycles with ChatGPT and Claude.</p>
+                            <span class="session-tag tag-lecture">Interactive Demo</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">10:30 AM - 11:45 AM</div>
+                            <h4>Hands on the Wheel</h4>
+                            <p>First real conversations with AI. Basic prompting, iterating on outputs, understanding when AI is helpful versus when it's not.</p>
+                            <span class="session-tag tag-hands-on">Hands-On</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">12:45 PM - 2:00 PM</div>
+                            <h4>Clean Energy Industry Crash Course</h4>
+                            <p>BPI certifications, utility programs (DTE, ComEd, Ameren), the rebate ecosystem, and the contractor industry. Context for every exercise that follows.</p>
+                            <span class="session-tag tag-lecture">Industry Context</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">2:15 PM - 3:30 PM</div>
+                            <h4>Digital Literacy and AI Safety</h4>
+                            <p>File management, cloud tools, password security, and the ethics of using AI responsibly in a professional context.</p>
+                            <span class="session-tag tag-lecture">Foundations</span>
+                            <span class="session-tag tag-assessment">Day 1 Assessment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-1" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">DAY 2</div>
+                        <div class="day-info">
+                            <h3>COMMUNICATION AND CUSTOMER SERVICE</h3>
+                            <p>"Becoming the Voice of the Business" | 6.5 hours</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <div class="session-time">9:00 AM - 10:15 AM</div>
+                            <h4>Prompt Engineering Deep Dive</h4>
+                            <p>Role-based prompting, chain-of-thought, formatting controls. The skills that separate "AI user" from "AI power user."</p>
+                            <span class="session-tag tag-hands-on">Hands-On</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">10:30 AM - 11:45 AM</div>
+                            <h4>Customer Email Mastery</h4>
+                            <p>Draft professional emails for scheduling, rebate explanations, project updates, and follow-ups. Build reusable templates with AI.</p>
+                            <span class="session-tag tag-hands-on">Scenario-Based</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">12:45 PM - 2:00 PM</div>
+                            <h4>Phone Scripts and Real-Time Communication</h4>
+                            <p>AI-generated call scripts for common customer scenarios. Handling objections. Real-time AI reference for live conversations.</p>
+                            <span class="session-tag tag-hands-on">Role Play</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">2:15 PM - 3:30 PM</div>
+                            <h4>Professional Writing with AI</h4>
+                            <p>Reports, meeting summaries, internal memos, SOPs. Building a contractor's document library with AI assistance.</p>
+                            <span class="session-tag tag-hands-on">Portfolio Piece</span>
+                            <span class="session-tag tag-assessment">Day 2 Assessment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-2" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">DAY 3</div>
+                        <div class="day-info">
+                            <h3>FINANCIAL OPERATIONS AND REBATES</h3>
+                            <p>"Following the Money" | 6.5 hours</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <div class="session-time">9:00 AM - 10:15 AM</div>
+                            <h4>Clean Energy Invoicing from Start to Finish</h4>
+                            <p>Invoice creation, data extraction, QuickBooks/Xero AI features, utility-specific billing formats.</p>
+                            <span class="session-tag tag-hands-on">Hands-On</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">10:30 AM - 12:00 PM</div>
+                            <h4>Rebate Processing Mastery</h4>
+                            <p>HOMES, HEAR, DTE, ComEd, and Ameren rebate applications. Income qualification. Documentation requirements. AI-assisted tracking systems.</p>
+                            <span class="session-tag tag-hands-on">Real Forms</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">1:00 PM - 2:15 PM</div>
+                            <h4>Financial Tracking and Reporting</h4>
+                            <p>Spreadsheet formulas with AI, expense categorization, payment status dashboards, cash flow basics for contractor businesses.</p>
+                            <span class="session-tag tag-hands-on">Spreadsheet Lab</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">2:30 PM - 3:30 PM</div>
+                            <h4>Compliance Documentation</h4>
+                            <p>BPI certification tracking, WAP reporting requirements, insurance documentation, inspection scheduling with AI assistance.</p>
+                            <span class="session-tag tag-hands-on">Compliance Lab</span>
+                            <span class="session-tag tag-assessment">Day 3 Assessment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-3" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">DAY 4</div>
+                        <div class="day-info">
+                            <h3>MARKETING, WEBSITES, AND DATA</h3>
+                            <p>"Building the Business's Public Face" | 6.5 hours</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <div class="session-time">9:00 AM - 10:15 AM</div>
+                            <h4>Social Media Strategy for Contractors</h4>
+                            <p>Content calendars, before/after project posts, customer testimonials, local SEO. Buffer for scheduling.</p>
+                            <span class="session-tag tag-hands-on">Content Creation</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">10:30 AM - 11:45 AM</div>
+                            <h4>Visual Content with Canva AI</h4>
+                            <p>Professional graphics for social media, flyers, business cards, email headers. Canva's Magic Studio features for non-designers.</p>
+                            <span class="session-tag tag-hands-on">Design Lab</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">12:45 PM - 2:00 PM</div>
+                            <h4>Website Content and Basic SEO</h4>
+                            <p>Writing website copy with AI, Google Business Profile optimization, basic SEO principles, content updates.</p>
+                            <span class="session-tag tag-hands-on">Live Site Work</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">2:15 PM - 3:30 PM</div>
+                            <h4>Data Entry, Reporting, and Meeting Notes</h4>
+                            <p>Otter.ai for meeting transcription. AI-assisted data cleaning. Report generation from raw project data.</p>
+                            <span class="session-tag tag-hands-on">Data Lab</span>
+                            <span class="session-tag tag-assessment">Day 4 Assessment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum-day reveal stagger-4" onclick="toggleDay(this)">
+                <div class="day-header">
+                    <div class="day-header-left">
+                        <div class="day-num">DAY 5</div>
+                        <div class="day-info">
+                            <h3>INTEGRATION AND CAPSTONE</h3>
+                            <p>"Proving You're Ready" | 6.5 hours</p>
+                        </div>
+                    </div>
+                    <div class="day-arrow">&#9660;</div>
+                </div>
+                <div class="day-details">
+                    <div class="day-details-inner">
+                        <div class="session-item">
+                            <div class="session-time">9:00 AM - 10:00 AM</div>
+                            <h4>Open Q&A and Workflow Integration</h4>
+                            <p>Address remaining questions. Discuss how to integrate AI into existing contractor workflows. Troubleshooting common issues.</p>
+                            <span class="session-tag tag-lecture">Discussion</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">10:15 AM - 11:15 AM</div>
+                            <h4>Advanced AI Techniques and Continued Learning</h4>
+                            <p>Custom instructions, AI tool chains, staying current as tools evolve, building your personal AI toolkit.</p>
+                            <span class="session-tag tag-hands-on">Advanced</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">12:15 PM - 2:15 PM</div>
+                            <h4>CAPSTONE PROJECT</h4>
+                            <p>Full scenario: receive a simulated week of contractor admin work. Process invoices, file rebates, handle customer communication, create marketing content, generate a weekly report. All with AI tools. Timed, assessed, real.</p>
+                            <span class="session-tag tag-assessment">Capstone</span>
+                            <span class="session-tag tag-hands-on">Comprehensive</span>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-time">2:30 PM - 3:30 PM</div>
+                            <h4>Capstone Review and Graduation</h4>
+                            <p>Peer review. Instructor feedback. Post-training assessment. Continued learning plan. Certificate of completion. You're ready.</p>
+                            <span class="session-tag tag-assessment">Graduation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="walkaway-box reveal">
+                <h3>WHAT YOU WALK AWAY WITH</h3>
+                <ul class="walkaway-list">
+                    <li>Proficiency across 6+ AI tools (ChatGPT, Claude, Canva, Buffer, QuickBooks AI, Otter.ai)</li>
+                    <li>Advanced prompt engineering for admin-specific tasks</li>
+                    <li>Complete invoice-to-rebate financial processing capability</li>
+                    <li>Marketing content creation and social media management</li>
+                    <li>Customer communication templates and scripts</li>
+                    <li>Compliance documentation and tracking systems</li>
+                    <li>Data entry, reporting, and meeting transcription skills</li>
+                    <li>Capstone portfolio demonstrating end-to-end competency</li>
+                    <li>Personal AI toolkit and continued learning plan</li>
+                    <li>Certificate of completion with measured skill gains</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT PB -->
+<section class="about-section" id="about">
+    <div class="section-inner">
+        <div class="section-label reveal">About Project Baseline</div>
+        <div class="section-title reveal stagger-1">BUILT BY SOMEONE WHO <span style="color:var(--red)">OPERATES</span> IN AI EVERY DAY</div>
+
+        <div class="about-grid">
+            <div class="about-text">
+                <p class="reveal">Project Baseline was founded in 2009 at the intersection of community development, culture, and innovation. Led by Todd Walton, PB has spent nearly two decades building strategy and infrastructure for organizations that operate where impact meets complexity, from civic institutions and nonprofits to corporate innovation teams and global development initiatives.</p>
+                <p class="reveal stagger-1">On the AI side, Todd doesn't just advise on adoption. He operates in it daily. He built and manages a 163-agent AI ecosystem that handles real operational work across multiple ventures. At The Desire Company, he uses AI to manage operations for a community of over 2,200 consumer experts running brand content projects at scale. This isn't a theoretical practice. The curriculum PB builds for Walker-Miller comes from someone who has pressure-tested these tools against real deadlines, real compliance requirements, and real organizational complexity.</p>
+            </div>
+
+            <div class="credential-cards">
+                <div class="credential-card reveal stagger-1">
+                    <span class="credential-icon">&#129302;</span>
+                    <div>
+                        <h4>163-Agent AI Ecosystem</h4>
+                        <p>Production AI system managing real operations across 6 ventures, 14 pods, daily.</p>
+                    </div>
+                </div>
+                <div class="credential-card reveal stagger-2">
+                    <span class="credential-icon">&#128101;</span>
+                    <div>
+                        <h4>2,200+ Expert Community</h4>
+                        <p>Managing brand content projects and expert community operations at scale for The Desire Company.</p>
+                    </div>
+                </div>
+                <div class="credential-card reveal stagger-3">
+                    <span class="credential-icon">&#127760;</span>
+                    <div>
+                        <h4>20 Years Across Industries</h4>
+                        <p>Hip-hop culture, civic life, corporate innovation, global development, and technology.</p>
+                    </div>
+                </div>
+                <div class="credential-card reveal stagger-4">
+                    <span class="credential-icon">&#127919;</span>
+                    <div>
+                        <h4>Community-First Approach</h4>
+                        <p>PB builds in underserved communities. Workforce empowerment is the mission, not a marketing angle.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PARTNERSHIP FIT -->
+<section class="partnership-section">
+    <div class="section-inner">
+        <div class="section-label reveal">Why This Partnership</div>
+        <div class="section-title reveal stagger-1">SHARED VALUES, <span style="color:var(--red)">COMPLEMENTARY</span> STRENGTHS</div>
+
+        <div class="partnership-cards">
+            <div class="partnership-card reveal stagger-1">
+                <h3>WORKFORCE EMPOWERMENT</h3>
+                <p>Walker-Miller's Energy Efficiency Academy (94% completion, 90% job placement) and PB's community development foundation are built on the same conviction: equipping people with real skills changes trajectories. This engagement extends that conviction into AI literacy.</p>
+            </div>
+            <div class="partnership-card reveal stagger-2">
+                <h3>OPERATIONAL AI EXPERTISE</h3>
+                <p>Todd runs a 163-agent AI ecosystem and manages AI-driven operations at scale every day. The curriculum Walker-Miller receives is built by someone who knows what works in practice, what breaks, and what entry-level professionals actually need to be productive.</p>
+            </div>
+            <div class="partnership-card reveal stagger-3">
+                <h3>CULTURAL CONTEXT</h3>
+                <p>Both organizations are led by Black professionals building in underserved communities. PB and Walker-Miller share cultural context, understand the communities this work serves, and bring a perspective on workforce development that larger firms do not have.</p>
+            </div>
+            <div class="partnership-card reveal stagger-4">
+                <h3>CAPACITY BUILDING, NOT DEPENDENCY</h3>
+                <p>The curriculum developed through this engagement becomes Walker-Miller's licensed intellectual property. This is a capacity-building model. Your team will be equipped to deliver, iterate, and scale this training independently.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- INVESTMENT -->
+<section class="investment-section" id="investment">
+    <div class="section-inner">
+        <div class="section-label reveal">Investment</div>
+        <div class="section-title reveal stagger-1" style="color:var(--white);">TRANSPARENT, <span style="color:var(--red)">MODULAR</span> PRICING</div>
+        <p class="investment-intro reveal stagger-2">This engagement is an investment in Walker-Miller's long-term workforce capacity. The curriculum becomes a licensed intellectual property asset deployable across future cohorts, new utility programs, and additional markets. Pricing is modular so you can start where it makes sense and scale from there.</p>
+
+        <div class="pricing-grid">
+            <div class="pricing-card reveal stagger-1">
+                <div class="pricing-tier">FOUNDATION</div>
+                <div class="pricing-range" style="font-size:1.4rem;">Custom Scope</div>
+                <div class="pricing-desc">Curriculum development and documentation. The intellectual property that powers every future cohort.</div>
+                <ul class="pricing-includes">
+                    <li>Custom AI training curriculum (1-day or 5-day)</li>
+                    <li>Facilitator guide with session plans</li>
+                    <li>Participant workbook with exercises</li>
+                    <li>Assessment rubrics and tools</li>
+                    <li>Tool setup documentation</li>
+                    <li>Two review checkpoints with Walker-Miller</li>
+                    <li>DOL AI Literacy Framework alignment</li>
+                </ul>
+            </div>
+
+            <div class="pricing-card featured reveal stagger-2">
+                <div class="pricing-tier">LAUNCH</div>
+                <div class="pricing-range" style="font-size:1.4rem;">Custom Scope</div>
+                <div class="pricing-desc">Everything in Foundation, plus Todd facilitates the pilot cohort and refines the curriculum based on real-world delivery.</div>
+                <ul class="pricing-includes">
+                    <li>Full curriculum development package</li>
+                    <li>Todd facilitates the first cohort (1-day or 5-day)</li>
+                    <li>Live curriculum refinement during delivery</li>
+                    <li>Participant progress tracking</li>
+                    <li>Post-cohort performance report</li>
+                    <li>Curriculum revision based on pilot results</li>
+                    <li>Case study and testimonial capture</li>
+                </ul>
+            </div>
+
+            <div class="pricing-card reveal stagger-3">
+                <div class="pricing-tier">SCALE</div>
+                <div class="pricing-range" style="font-size:1.4rem;">Custom Scope</div>
+                <div class="pricing-desc">Everything in Launch, plus train-the-trainer certification and a year of curriculum maintenance as AI tools evolve.</div>
+                <ul class="pricing-includes">
+                    <li>Full curriculum + pilot cohort package</li>
+                    <li>Train-the-trainer program (certify internal staff)</li>
+                    <li>12 months of quarterly curriculum updates</li>
+                    <li>Scaling playbook for multi-site delivery</li>
+                    <li>Advisory support hours (on-call)</li>
+                    <li>Annual curriculum licensing</li>
+                    <li>Full internal ownership within 2-3 cohorts</li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="pricing-note reveal">Pricing for each package is tailored to your program's scope, cohort size, and delivery format. We will define these details together during the scoping phase.</p>
+    </div>
+</section>
+
+<!-- ENGAGEMENT PHASES -->
+<section class="phases-section">
+    <div class="section-inner">
+        <div class="section-label reveal">How We Work Together</div>
+        <div class="section-title reveal stagger-1">FROM DISCOVERY TO <span style="color:var(--red)">DELIVERY</span></div>
+
+        <div class="phase-timeline" id="phaseTimeline">
+            <div class="phase-progress-line" id="phaseProgressLine"></div>
+            <div class="phase-item reveal">
+                <div class="phase-dot"></div>
+                <h3>PHASE 0: DISCOVERY AND SCOPING</h3>
+                <div class="phase-meta">Complimentary | 2-3 weeks</div>
+                <p>A focused assessment of Walker-Miller's current administrative workflows, tool environment, and team readiness. We identify the highest-impact AI use cases and define cohort parameters together.</p>
+                <div class="phase-deliverables">
+                    <span class="phase-deliverable">Workflow Audit</span>
+                    <span class="phase-deliverable">AI Readiness Assessment</span>
+                    <span class="phase-deliverable">Scoping Report</span>
+                    <span class="phase-deliverable">Finalized Project Plan</span>
+                </div>
+            </div>
+
+            <div class="phase-item reveal stagger-1">
+                <div class="phase-dot"></div>
+                <h3>PHASE 1: CURRICULUM DEVELOPMENT</h3>
+                <div class="phase-meta">4-6 weeks</div>
+                <p>We build the full training curriculum with module content, hands-on exercises, assessment rubrics, and facilitator guides. Every module maps to real Walker-Miller workflows. Two review checkpoints ensure alignment before any cohort begins.</p>
+                <div class="phase-deliverables">
+                    <span class="phase-deliverable">Complete Curriculum Package</span>
+                    <span class="phase-deliverable">Facilitator Guide</span>
+                    <span class="phase-deliverable">Participant Workbook</span>
+                    <span class="phase-deliverable">Tool Setup Docs</span>
+                </div>
+            </div>
+
+            <div class="phase-item reveal stagger-2">
+                <div class="phase-dot"></div>
+                <h3>PHASE 2: PILOT COHORT</h3>
+                <div class="phase-meta">Aligned with Walker-Miller's cohort schedule</div>
+                <p>Todd facilitates the first cohort directly, validating the curriculum in a live environment, capturing participant feedback, and identifying refinements for future delivery.</p>
+                <div class="phase-deliverables">
+                    <span class="phase-deliverable">Full Cohort Facilitation</span>
+                    <span class="phase-deliverable">Progress Tracking</span>
+                    <span class="phase-deliverable">Performance Report</span>
+                    <span class="phase-deliverable">Refinement Recommendations</span>
+                </div>
+            </div>
+
+            <div class="phase-item reveal stagger-3">
+                <div class="phase-dot"></div>
+                <h3>PHASE 3: ONGOING SUPPORT AND SCALING</h3>
+                <div class="phase-meta">3-6 months (flexible)</div>
+                <p>After the pilot, we transition facilitation capability to Walker-Miller's internal team. This includes train-the-trainer sessions, quarterly curriculum updates, and on-call advisory support. The goal is full internal ownership within two to three cohort cycles.</p>
+                <div class="phase-deliverables">
+                    <span class="phase-deliverable">Train-the-Trainer Program</span>
+                    <span class="phase-deliverable">Quarterly Updates</span>
+                    <span class="phase-deliverable">Scaling Playbook</span>
+                    <span class="phase-deliverable">Advisory Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="next">
+    <div class="section-inner">
+        <div class="section-label reveal">Next Steps</div>
+        <div class="section-title reveal stagger-1" style="color:var(--white);">LET'S <span style="color:var(--red)">BUILD</span> THIS</div>
+
+        <div class="cta-steps">
+            <div class="cta-step reveal stagger-1">
+                <div class="step-num">01</div>
+                <h4>Schedule Scoping Call</h4>
+                <p>Walk through current workflows, cohort size, timing, and priorities.</p>
+            </div>
+            <div class="cta-step reveal stagger-2">
+                <div class="step-num">02</div>
+                <h4>Define Parameters</h4>
+                <p>Lock in participant profiles, program duration, and key milestones.</p>
+            </div>
+            <div class="cta-step reveal stagger-3">
+                <div class="step-num">03</div>
+                <h4>Finalized Proposal</h4>
+                <p>Receive detailed scope, deliverables, and transparent pricing.</p>
+            </div>
+            <div class="cta-step reveal stagger-4">
+                <div class="step-num">04</div>
+                <h4>Begin Building</h4>
+                <p>Curriculum development starts. Walker-Miller has review authority at every stage.</p>
+            </div>
+        </div>
+
+        <p class="cta-closing reveal">Walker-Miller has already built something remarkable with the Energy Efficiency Academy, proving that investing in people produces results that scale. This engagement adds a new layer to that foundation, equipping administrative professionals with AI skills that make the entire operation faster, sharper, and more resilient. I'm ready to build this with you whenever you're ready to start.</p>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-logo"><span>P</span>ROJECT <span>B</span>ASELINE</div>
+    <p>Community Development. Culture. Innovation.</p>
+    <p>Todd Walton | todd@project-baseline.com | 312-646-9230</p>
+    <p class="confidential">This proposal is confidential and intended solely for Walker-Miller Energy Services. The curriculum frameworks, pricing, and engagement structures described herein are proprietary to Project Baseline. &copy; 2026 Project Baseline. All rights reserved.</p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+(function() {
+    // PROGRESS BAR
+    var progressBar = document.getElementById('progressBar');
+    function updateProgress() {
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (docHeight > 0) progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+    }
+
+    // NAV SCROLL
+    var nav = document.getElementById('mainNav');
+    function updateNav() {
+        if ((window.pageYOffset || window.scrollY) > 60) {
+            if (nav.className.indexOf('scrolled') === -1) nav.className += ' scrolled';
+        } else {
+            nav.className = nav.className.replace(/\s*scrolled/g, '');
+        }
+    }
+
+    // REVEAL ON SCROLL
+    var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    var revealObserver;
+    if ('IntersectionObserver' in window) {
+        revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        revealElements.forEach(function(el) { revealObserver.observe(el); });
+    } else {
+        revealElements.forEach(function(el) { el.classList.add('active'); });
+    }
+
+    // ANIMATED COUNTERS
+    var statNumbers = document.querySelectorAll('.stat-number[data-count]');
+    var countedMap = {};
+    function animateCount(el) {
+        var key = el.getAttribute('data-count') + el.getAttribute('data-suffix');
+        if (countedMap[key]) return;
+        countedMap[key] = true;
+        var target = parseFloat(el.getAttribute('data-count'));
+        var prefix = el.getAttribute('data-prefix') || '';
+        var suffix = el.getAttribute('data-suffix') || '';
+        var isDecimal = target % 1 !== 0;
+        var isLarge = target >= 1000;
+        var duration = 1800;
+        var start = performance.now();
+        function step(now) {
+            var elapsed = now - start;
+            var progress = Math.min(elapsed / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            var current = target * eased;
+            if (isDecimal) {
+                el.textContent = prefix + current.toFixed(1) + suffix;
+            } else if (isLarge) {
+                el.textContent = prefix + Math.round(current).toLocaleString() + suffix;
+            } else {
+                el.textContent = prefix + Math.round(current) + suffix;
+            }
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+    if ('IntersectionObserver' in window) {
+        var countObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) animateCount(entry.target);
+            });
+        }, { threshold: 0.4 });
+        statNumbers.forEach(function(el) { countObserver.observe(el); });
+    }
+
+    // PHASE TIMELINE ANIMATION
+    var phaseTimeline = document.getElementById('phaseTimeline');
+    var phaseProgressLine = document.getElementById('phaseProgressLine');
+    var phaseItems = phaseTimeline ? phaseTimeline.querySelectorAll('.phase-item') : [];
+    var phaseDots = phaseTimeline ? phaseTimeline.querySelectorAll('.phase-dot') : [];
+
+    function updatePhaseTimeline() {
+        if (!phaseTimeline || !phaseProgressLine) return;
+        var vh = window.innerHeight;
+        var triggerY = vh * 0.65;
+        var timelineRect = phaseTimeline.getBoundingClientRect();
+        var lastActiveDot = null;
+
+        for (var i = 0; i < phaseItems.length; i++) {
+            var itemRect = phaseItems[i].getBoundingClientRect();
+            var dot = phaseDots[i];
+            if (itemRect.top < triggerY) {
+                dot.classList.add('active');
+                lastActiveDot = dot;
+            } else {
+                dot.classList.remove('active');
+            }
+        }
+
+        // Extend red progress line to the last active dot
+        if (lastActiveDot) {
+            var dotRect = lastActiveDot.getBoundingClientRect();
+            var lineTop = timelineRect.top;
+            var lineHeight = dotRect.top - lineTop + 13;
+            phaseProgressLine.style.height = Math.max(0, lineHeight) + 'px';
+        } else {
+            phaseProgressLine.style.height = '0px';
+        }
+    }
+
+    // SCROLL HANDLER
+    function onScroll() {
+        updateProgress();
+        updateNav();
+        updatePhaseTimeline();
+    }
+    window.addEventListener('scroll', onScroll, false);
+    window.addEventListener('touchmove', onScroll, false);
+    window.addEventListener('resize', onScroll, false);
+
+    // SMOOTH ANCHOR SCROLL
+    document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            var target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                var offset = 70;
+                var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({ top: top, behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Initial
+    onScroll();
+    setTimeout(onScroll, 300);
+    setTimeout(onScroll, 1000);
+})();
+
+// TAB SWITCHING
+function switchTab(tabId) {
+    var btns = document.querySelectorAll('.tab-btn');
+    var contents = document.querySelectorAll('.tab-content');
+    btns.forEach(function(b) { b.classList.remove('active'); });
+    contents.forEach(function(c) { c.classList.remove('active'); });
+    document.getElementById('tab-' + tabId).classList.add('active');
+    // Activate the right button
+    btns.forEach(function(b) {
+        if ((tabId === 'oneday' && b.textContent.indexOf('ONE') > -1) ||
+            (tabId === 'fiveday' && b.textContent.indexOf('FIVE') > -1)) {
+            b.classList.add('active');
+        }
+    });
+}
+
+// EXPANDABLE CURRICULUM DAYS
+function toggleDay(el) {
+    var wasExpanded = el.classList.contains('expanded');
+    // Close all in same tab
+    var parent = el.parentElement;
+    parent.querySelectorAll('.curriculum-day').forEach(function(d) {
+        d.classList.remove('expanded');
+    });
+    if (!wasExpanded) el.classList.add('expanded');
+}
+
+// ===== SCROLL-DRIVEN CANVAS VISUALIZATION =====
+(function() {
+    var canvas = document.getElementById('chainCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var container = document.querySelector('.scroll-drive-container');
+    if (!container) return;
+    var dpr = window.devicePixelRatio || 1;
+    var w = 0, h = 0;
+    var RED = '#E31B23';
+    var WHITE_NODE = '#D0D0D0';
+    var GOLD = '#D4A843';
+    var GOLD_BRIGHT = '#F0CC60';
+
+    function resizeCanvas() {
+        var rect = canvas.parentElement.getBoundingClientRect();
+        w = rect.width; h = rect.height;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function clamp01(t) { return Math.max(0, Math.min(1, t)); }
+    function easeOut(t) { return 1 - Math.pow(1 - clamp01(t), 3); }
+    function mapRange(v, lo, hi) { return clamp01((v - lo) / (hi - lo)); }
+
+    // Generate client node positions radiating upward from center
+    function genClients(cx, cy, count, minD, maxD, seed) {
+        var out = [];
+        var golden = Math.PI * (3 - Math.sqrt(5));
+        for (var i = 0; i < count; i++) {
+            var angle = (seed || 0) + i * golden;
+            var t = i / Math.max(count - 1, 1);
+            var dist = minD + t * (maxD - minD);
+            // Bias upward: compress vertical, shift y negative
+            var x = cx + Math.cos(angle) * dist;
+            var y = cy + Math.sin(angle) * dist * 0.6 - dist * 0.25;
+            // Clamp: don't overlap title area or stage text area on mobile
+            y = Math.max(h * 0.18, Math.min(y, h * 0.62));
+            var s = 2.5 + ((i * 7 + 3) % 4);
+            out.push({ x: x, y: y, s: s });
+        }
+        return out;
+    }
+
+    function drawGlowNode(x, y, r, color, glow, alpha) {
+        if (alpha <= 0.01) return;
+        ctx.save();
+        ctx.globalAlpha = clamp01(alpha);
+        // Outer glow
+        ctx.shadowColor = color;
+        ctx.shadowBlur = r * glow;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        // Inner bright core
+        ctx.shadowBlur = 0;
+        var grad = ctx.createRadialGradient(x, y, 0, x, y, r * 0.8);
+        grad.addColorStop(0, 'rgba(255,255,255,0.45)');
+        grad.addColorStop(0.5, 'rgba(255,255,255,0.12)');
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawConn(x1, y1, x2, y2, color, progress, alpha, lw) {
+        if (progress <= 0.01 || alpha <= 0.01) return;
+        var ex = x1 + (x2 - x1) * clamp01(progress);
+        var ey = y1 + (y2 - y1) * clamp01(progress);
+        ctx.save();
+        ctx.globalAlpha = clamp01(alpha) * 0.5;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 6;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lw || 2;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1); ctx.lineTo(ex, ey);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawClientDot(x, y, s, alpha, glow) {
+        if (alpha <= 0.01) return;
+        ctx.save();
+        ctx.globalAlpha = clamp01(alpha);
+        ctx.shadowColor = RED;
+        ctx.shadowBlur = s * glow;
+        ctx.beginPath();
+        ctx.arc(x, y, s, 0, Math.PI * 2);
+        ctx.fillStyle = RED;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawLabel(x, y, lines, color, alpha, size) {
+        if (alpha <= 0.01) return;
+        ctx.save();
+        ctx.globalAlpha = clamp01(alpha);
+        ctx.fillStyle = color;
+        ctx.font = (size || 10) + 'px Montserrat, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        for (var i = 0; i < lines.length; i++) {
+            ctx.fillText(lines[i], x, y + i * (size || 10) * 1.4);
+        }
+        ctx.restore();
+    }
+
+    function getProgress() {
+        var rect = container.getBoundingClientRect();
+        var scrollable = container.offsetHeight - window.innerHeight;
+        if (scrollable <= 0) return 0;
+        return clamp01(-rect.top / scrollable);
+    }
+
+    function updateStages(p) {
+        var items = document.querySelectorAll('#stageText .stage-item');
+        var cur = -1;
+        if (p >= 0.08 && p < 0.38) cur = 0;
+        else if (p >= 0.38 && p < 0.62) cur = 1;
+        else if (p >= 0.62) cur = 2;
+        for (var i = 0; i < items.length; i++) {
+            var s = parseInt(items[i].getAttribute('data-stage'));
+            if (s === cur) items[i].classList.add('active');
+            else items[i].classList.remove('active');
+        }
+        var hint = document.getElementById('scrollHint');
+        if (hint) hint.style.opacity = p < 0.92 ? '1' : '0';
+    }
+
+    function renderFrame() {
+        if (w === 0 || h === 0) return;
+        var p = getProgress();
+        ctx.clearRect(0, 0, w, h);
+
+        var scale = Math.min(w, h);
+        var mobile = w < 768;
+        // On mobile: push triangle into upper portion so text sits below
+        var cx, cy, ax, ay, aix, aiy;
+        if (mobile) {
+            cx = w * 0.50; cy = h * 0.42;
+            ax = w * 0.25; ay = h * 0.60;
+            aix = w * 0.75; aiy = h * 0.60;
+        } else {
+            cx = w * 0.52; cy = h * 0.46;
+            ax = w * 0.32; ay = h * 0.66;
+            aix = w * 0.72; aiy = h * 0.66;
+        }
+        var mainR = mobile ? scale * 0.05 : scale * 0.038;
+        var subR = mobile ? scale * 0.04 : scale * 0.03;
+
+        // Animation progress for each stage
+        var contractorA = easeOut(mapRange(p, 0.05, 0.15));
+        var c5p = mapRange(p, 0.15, 0.32);
+        var adminA = easeOut(mapRange(p, 0.35, 0.45));
+        var adminConnP = easeOut(mapRange(p, 0.37, 0.48));
+        var c12p = mapRange(p, 0.46, 0.58);
+        var aiA = easeOut(mapRange(p, 0.60, 0.70));
+        var aiConnAdminP = easeOut(mapRange(p, 0.63, 0.73));
+        var aiConnContP = easeOut(mapRange(p, 0.66, 0.76));
+        var c25p = mapRange(p, 0.74, 0.92);
+        var finalGlow = mapRange(p, 0.76, 0.95);
+        var glow = 1.5 + finalGlow * 3;
+
+        // Generate client clusters (biased upward from contractor)
+        var clients1 = genClients(cx, cy, 5, scale * 0.06, scale * 0.11, 0);
+        var clients2 = genClients(cx, cy - scale * 0.01, 7, scale * 0.10, scale * 0.17, 3.5);
+        var clients3 = genClients(cx, cy + scale * 0.005, 22, scale * 0.14, scale * 0.26, 7.2);
+
+        // Gold cascade: how much gold has taken over (0-1)
+        var goldCascade = easeOut(mapRange(p, 0.72, 0.88));
+
+        // Draw connections (behind everything)
+        // 1. Admin -> Contractor (starts white, turns gold)
+        var acColor = goldCascade > 0.01 ? GOLD : WHITE_NODE;
+        drawConn(ax, ay, cx, cy, acColor, adminConnP, adminA, 2);
+        // Gold overlay on admin->contractor connection
+        if (goldCascade > 0.01) drawConn(ax, ay, cx, cy, GOLD_BRIGHT, adminConnP, goldCascade * 0.6, 3);
+
+        // 2. AI -> Admin (gold from the start since AI is gold)
+        drawConn(aix, aiy, ax, ay, GOLD, aiConnAdminP, aiA, 2);
+        if (goldCascade > 0.01) drawConn(aix, aiy, ax, ay, GOLD_BRIGHT, aiConnAdminP, goldCascade * 0.5, 3);
+
+        // 3. AI -> Contractor (gold, completing the triangle)
+        drawConn(aix, aiy, cx, cy, GOLD, aiConnContP, aiA, 2);
+        if (goldCascade > 0.01) drawConn(aix, aiy, cx, cy, GOLD_BRIGHT, aiConnContP, goldCascade * 0.5, 3);
+
+        // Client connections and dots - Stage 1 (5)
+        var i, cp;
+        for (i = 0; i < clients1.length; i++) {
+            cp = easeOut(clamp01(c5p * 6 / 5 - i / 5));
+            if (cp > 0.01) {
+                ctx.save();
+                ctx.globalAlpha = cp * 0.12;
+                ctx.strokeStyle = RED; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(clients1[i].x, clients1[i].y); ctx.stroke();
+                ctx.restore();
+                drawClientDot(clients1[i].x, clients1[i].y, clients1[i].s, cp, glow * 0.4);
+            }
+        }
+        // Stage 2 (7 more)
+        for (i = 0; i < clients2.length; i++) {
+            cp = easeOut(clamp01(c12p * 8 / 7 - i / 7));
+            if (cp > 0.01) {
+                ctx.save();
+                ctx.globalAlpha = cp * 0.12;
+                ctx.strokeStyle = RED; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(clients2[i].x, clients2[i].y); ctx.stroke();
+                ctx.restore();
+                drawClientDot(clients2[i].x, clients2[i].y, clients2[i].s, cp, glow * 0.5);
+            }
+        }
+        // Stage 3 (22 more - the big burst)
+        for (i = 0; i < clients3.length; i++) {
+            cp = easeOut(clamp01(c25p * 23 / 22 - i / 22));
+            if (cp > 0.01) {
+                ctx.save();
+                ctx.globalAlpha = cp * 0.1;
+                ctx.strokeStyle = goldCascade > 0.3 ? GOLD : RED;
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(clients3[i].x, clients3[i].y); ctx.stroke();
+                ctx.restore();
+                drawClientDot(clients3[i].x, clients3[i].y, clients3[i].s, cp, glow * 0.6);
+            }
+        }
+
+        // Main nodes (on top)
+        // Contractor: red, turns gold when triangle completes
+        drawGlowNode(cx, cy, mainR, RED, glow, contractorA);
+        if (goldCascade > 0.01) drawGlowNode(cx, cy, mainR, GOLD_BRIGHT, glow * 1.2, contractorA * goldCascade * 0.7);
+
+        // Admin: white, turns gold when AI connects
+        drawGlowNode(ax, ay, subR, WHITE_NODE, glow * adminA, adminA);
+        if (goldCascade > 0.01) drawGlowNode(ax, ay, subR, GOLD, glow * 1.2, adminA * goldCascade * 0.8);
+
+        // AI: gold from the start
+        drawGlowNode(aix, aiy, subR, GOLD, glow * aiA, aiA);
+        if (goldCascade > 0.01) drawGlowNode(aix, aiy, subR, GOLD_BRIGHT, glow * 1.3, aiA * goldCascade * 0.6);
+
+        // Labels
+        var labelGold = goldCascade > 0.5 ? GOLD_BRIGHT : '#E8E8E8';
+        drawLabel(cx, cy + mainR + 12, ['CLEAN ENERGY', 'CONTRACTOR'], labelGold, contractorA, 10);
+        drawLabel(ax, ay + subR + 10, ['ADMIN SUPPORT', 'PROFESSIONAL'], goldCascade > 0.3 ? GOLD : '#A0A0A0', adminA, 9);
+        drawLabel(aix, aiy + subR + 10, ['AI-POWERED', 'TRAINING'], GOLD, aiA, 9);
+
+        // Update stage text
+        updateStages(p);
+    }
+
+    // Scroll-driven rendering
+    var ticking = false;
+    function onScrollChain() {
+        if (!ticking) {
+            requestAnimationFrame(function() { renderFrame(); ticking = false; });
+            ticking = true;
+        }
+    }
+    window.addEventListener('scroll', onScrollChain, { passive: true });
+    window.addEventListener('resize', function() { resizeCanvas(); renderFrame(); });
+    resizeCanvas();
+    renderFrame();
+})();
+</script>
+</body>
+</html>
