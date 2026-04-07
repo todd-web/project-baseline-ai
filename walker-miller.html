@@ -14,13 +14,14 @@
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 :root {
-    --red: #E31B23;
-    --red-dark: #B8151B;
-    --red-glow: rgba(227, 27, 35, 0.25);
-    --black: #1A1A1A;
-    --black-deep: #0D0D0D;
+    --red: #7577C0;
+    --red-dark: #5B5DA0;
+    --red-glow: rgba(117, 119, 192, 0.25);
+    --green: #4DAF40;
+    --black: #1F2332;
+    --black-deep: #141722;
     --white: #FFFFFF;
-    --gray: #808080;
+    --gray: #7A7D86;
     --gray-light: #B0B0B0;
     --gray-lighter: #E8E8E8;
     --cream: #F5F5F2;
@@ -57,7 +58,7 @@ nav {
     right: 0;
     z-index: 10000;
     padding: 1.1rem 2.5rem;
-    background: rgba(26, 26, 26, 0.92);
+    background: rgba(31, 35, 50, 0.92);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     display: flex;
@@ -67,7 +68,7 @@ nav {
 }
 nav.scrolled {
     padding: 0.7rem 2.5rem;
-    background: rgba(13, 13, 13, 0.97);
+    background: rgba(31, 35, 50, 0.97);
     box-shadow: 0 4px 24px rgba(0,0,0,0.3);
 }
 .nav-logo {
@@ -2210,10 +2211,11 @@ function toggleDay(el) {
     if (!container) return;
     var dpr = window.devicePixelRatio || 1;
     var w = 0, h = 0;
-    var RED = '#E31B23';
+    var RED = '#7577C0';
     var WHITE_NODE = '#D0D0D0';
     var GOLD = '#D4A843';
     var GOLD_BRIGHT = '#F0CC60';
+    var GREEN = '#4DAF40';
 
     function resizeCanvas() {
         var rect = canvas.parentElement.getBoundingClientRect();
@@ -2284,15 +2286,16 @@ function toggleDay(el) {
         ctx.restore();
     }
 
-    function drawClientDot(x, y, s, alpha, glow) {
+    function drawClientDot(x, y, s, alpha, glow, color) {
         if (alpha <= 0.01) return;
+        var c = color || RED;
         ctx.save();
         ctx.globalAlpha = clamp01(alpha);
-        ctx.shadowColor = RED;
+        ctx.shadowColor = c;
         ctx.shadowBlur = s * glow;
         ctx.beginPath();
         ctx.arc(x, y, s, 0, Math.PI * 2);
-        ctx.fillStyle = RED;
+        ctx.fillStyle = c;
         ctx.fill();
         ctx.restore();
     }
@@ -2382,12 +2385,12 @@ function toggleDay(el) {
         // Gold overlay on admin->contractor connection
         if (goldCascade > 0.01) drawConn(ax, ay, cx, cy, GOLD_BRIGHT, adminConnP, goldCascade * 0.6, 3);
 
-        // 2. AI -> Admin (gold from the start since AI is gold)
-        drawConn(aix, aiy, ax, ay, GOLD, aiConnAdminP, aiA, 2);
+        // 2. AI -> Admin (green from the start since AI is green)
+        drawConn(aix, aiy, ax, ay, GREEN, aiConnAdminP, aiA, 2);
         if (goldCascade > 0.01) drawConn(aix, aiy, ax, ay, GOLD_BRIGHT, aiConnAdminP, goldCascade * 0.5, 3);
 
-        // 3. AI -> Contractor (gold, completing the triangle)
-        drawConn(aix, aiy, cx, cy, GOLD, aiConnContP, aiA, 2);
+        // 3. AI -> Contractor (green, completing the triangle)
+        drawConn(aix, aiy, cx, cy, GREEN, aiConnContP, aiA, 2);
         if (goldCascade > 0.01) drawConn(aix, aiy, cx, cy, GOLD_BRIGHT, aiConnContP, goldCascade * 0.5, 3);
 
         // Client connections and dots - Stage 1 (5)
@@ -2421,11 +2424,11 @@ function toggleDay(el) {
             if (cp > 0.01) {
                 ctx.save();
                 ctx.globalAlpha = cp * 0.1;
-                ctx.strokeStyle = goldCascade > 0.3 ? GOLD : RED;
+                ctx.strokeStyle = goldCascade > 0.3 ? GOLD : GREEN;
                 ctx.lineWidth = 1;
                 ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(clients3[i].x, clients3[i].y); ctx.stroke();
                 ctx.restore();
-                drawClientDot(clients3[i].x, clients3[i].y, clients3[i].s, cp, glow * 0.6);
+                drawClientDot(clients3[i].x, clients3[i].y, clients3[i].s, cp, glow * 0.6, GREEN);
             }
         }
 
@@ -2438,15 +2441,15 @@ function toggleDay(el) {
         drawGlowNode(ax, ay, subR, WHITE_NODE, glow * adminA, adminA);
         if (goldCascade > 0.01) drawGlowNode(ax, ay, subR, GOLD, glow * 1.2, adminA * goldCascade * 0.8);
 
-        // AI: gold from the start
-        drawGlowNode(aix, aiy, subR, GOLD, glow * aiA, aiA);
+        // AI: green from the start
+        drawGlowNode(aix, aiy, subR, GREEN, glow * aiA, aiA);
         if (goldCascade > 0.01) drawGlowNode(aix, aiy, subR, GOLD_BRIGHT, glow * 1.3, aiA * goldCascade * 0.6);
 
         // Labels
         var labelGold = goldCascade > 0.5 ? GOLD_BRIGHT : '#E8E8E8';
         drawLabel(cx, cy + mainR + 12, ['CLEAN ENERGY', 'CONTRACTOR'], labelGold, contractorA, 10);
         drawLabel(ax, ay + subR + 10, ['ADMIN SUPPORT', 'PROFESSIONAL'], goldCascade > 0.3 ? GOLD : '#A0A0A0', adminA, 9);
-        drawLabel(aix, aiy + subR + 10, ['AI-POWERED', 'TRAINING'], GOLD, aiA, 9);
+        drawLabel(aix, aiy + subR + 10, ['AI-POWERED', 'TRAINING'], GREEN, aiA, 9);
 
         // Update stage text
         updateStages(p);
