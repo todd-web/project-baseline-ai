@@ -130,7 +130,7 @@ nav.scrolled {
 /* ===== HERO ===== */
 .hero {
     min-height: 100vh;
-    background: var(--black-deep);
+    background: var(--white);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -147,7 +147,7 @@ nav.scrolled {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(ellipse at 60% 40%, rgba(227,27,35,0.06) 0%, transparent 60%);
+    background: radial-gradient(ellipse at 60% 40%, rgba(117,119,192,0.04) 0%, transparent 60%);
     pointer-events: none;
 }
 .hero-badge {
@@ -159,13 +159,13 @@ nav.scrolled {
     color: var(--red);
     margin-bottom: 2rem;
     padding: 0.5rem 1.5rem;
-    border: 1px solid rgba(227,27,35,0.3);
+    border: 1px solid rgba(117,119,192,0.3);
     border-radius: 30px;
 }
 .hero h1 {
     font-family: var(--font-display);
     font-size: clamp(3rem, 7vw, 5.5rem);
-    color: var(--white);
+    color: var(--black);
     letter-spacing: 3px;
     line-height: 1.05;
     max-width: 900px;
@@ -175,7 +175,7 @@ nav.scrolled {
 .hero-sub {
     font-family: var(--font-accent);
     font-size: clamp(1.1rem, 2vw, 1.4rem);
-    color: var(--gray-light);
+    color: var(--gray);
     max-width: 680px;
     line-height: 1.6;
     font-weight: 400;
@@ -192,18 +192,18 @@ nav.scrolled {
     font-family: var(--font-display);
     font-size: 1.5rem;
     letter-spacing: 2px;
-    color: var(--white);
+    color: var(--black);
 }
 .hero-logos .logo-text span { color: var(--red); }
 .hero-logos .divider {
     width: 1px;
     height: 30px;
-    background: var(--gray);
+    background: var(--gray-lighter);
 }
 .hero-logos .partner-name {
     font-family: var(--font-body);
     font-size: 0.95rem;
-    color: var(--gray-light);
+    color: var(--gray);
     font-weight: 500;
     letter-spacing: 1px;
 }
@@ -226,8 +226,8 @@ nav.scrolled {
 .scroll-arrow {
     width: 10px;
     height: 10px;
-    border-right: 2px solid var(--red);
-    border-bottom: 2px solid var(--red);
+    border-right: 2px solid var(--green);
+    border-bottom: 2px solid var(--green);
     transform: rotate(45deg);
     animation: bounceDown 2s infinite;
 }
@@ -1214,7 +1214,7 @@ footer .confidential {
 <section class="story-section" id="story">
     <div class="section-inner">
         <div class="section-label reveal">The Story</div>
-        <div class="section-title reveal stagger-1" style="color:var(--white);">CLEAN ENERGY CONTRACTORS ARE <span style="color:var(--red)">WORLD-CLASS</span> BUILDERS</div>
+        <div class="section-title reveal stagger-1" style="color:var(--white);"><span style="color:var(--green)">CLEAN ENERGY</span> CONTRACTORS ARE <span style="color:var(--red)">WORLD-CLASS</span> BUILDERS</div>
         <div class="section-subtitle reveal stagger-2">But administrative complexity is holding them back.</div>
 
         <!-- Story Block 1 -->
@@ -1292,7 +1292,7 @@ footer .confidential {
     <div class="scroll-drive-inner">
         <canvas id="chainCanvas"></canvas>
         <div class="chain-title-overlay" id="chainTitle">
-            <h2>POWERING THE WORKFORCE THAT <span>POWERS CLEAN ENERGY</span></h2>
+            <h2>POWERING THE WORKFORCE THAT <span style="color:#4DAF40">POWERS CLEAN ENERGY</span></h2>
             <p>Scroll to see the multiplier effect</p>
         </div>
         <div class="stage-text" id="stageText">
@@ -2400,10 +2400,10 @@ function toggleDay(el) {
             if (cp > 0.01) {
                 ctx.save();
                 ctx.globalAlpha = cp * 0.12;
-                ctx.strokeStyle = RED; ctx.lineWidth = 1;
+                ctx.strokeStyle = GREEN; ctx.lineWidth = 1;
                 ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(clients1[i].x, clients1[i].y); ctx.stroke();
                 ctx.restore();
-                drawClientDot(clients1[i].x, clients1[i].y, clients1[i].s, cp, glow * 0.4);
+                drawClientDot(clients1[i].x, clients1[i].y, clients1[i].s, cp, glow * 0.4, GREEN);
             }
         }
         // Stage 2 (7 more)
@@ -2412,10 +2412,10 @@ function toggleDay(el) {
             if (cp > 0.01) {
                 ctx.save();
                 ctx.globalAlpha = cp * 0.12;
-                ctx.strokeStyle = RED; ctx.lineWidth = 1;
+                ctx.strokeStyle = GREEN; ctx.lineWidth = 1;
                 ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(clients2[i].x, clients2[i].y); ctx.stroke();
                 ctx.restore();
-                drawClientDot(clients2[i].x, clients2[i].y, clients2[i].s, cp, glow * 0.5);
+                drawClientDot(clients2[i].x, clients2[i].y, clients2[i].s, cp, glow * 0.5, GREEN);
             }
         }
         // Stage 3 (22 more - the big burst)
@@ -2433,8 +2433,8 @@ function toggleDay(el) {
         }
 
         // Main nodes (on top)
-        // Contractor: red, turns gold when triangle completes
-        drawGlowNode(cx, cy, mainR, RED, glow, contractorA);
+        // Contractor: green, turns gold when triangle completes
+        drawGlowNode(cx, cy, mainR, GREEN, glow, contractorA);
         if (goldCascade > 0.01) drawGlowNode(cx, cy, mainR, GOLD_BRIGHT, glow * 1.2, contractorA * goldCascade * 0.7);
 
         // Admin: white, turns gold when AI connects
@@ -2446,7 +2446,7 @@ function toggleDay(el) {
         if (goldCascade > 0.01) drawGlowNode(aix, aiy, subR, GOLD_BRIGHT, glow * 1.3, aiA * goldCascade * 0.6);
 
         // Labels
-        var labelGold = goldCascade > 0.5 ? GOLD_BRIGHT : '#E8E8E8';
+        var labelGold = goldCascade > 0.5 ? GOLD_BRIGHT : GREEN;
         drawLabel(cx, cy + mainR + 12, ['CLEAN ENERGY', 'CONTRACTOR'], labelGold, contractorA, 10);
         drawLabel(ax, ay + subR + 10, ['ADMIN SUPPORT', 'PROFESSIONAL'], goldCascade > 0.3 ? GOLD : '#A0A0A0', adminA, 9);
         drawLabel(aix, aiy + subR + 10, ['AI-POWERED', 'TRAINING'], GREEN, aiA, 9);
