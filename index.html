@@ -1167,6 +1167,165 @@
         }
 
         /* ========================================
+           INQUIRY FORM (inside Section 7)
+           ======================================== */
+        .inquiry-divider {
+            position: relative;
+            z-index: 2;
+            max-width: 480px;
+            margin: 56px auto 40px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .inquiry-divider::before,
+        .inquiry-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .inquiry-form-wrap {
+            position: relative;
+            z-index: 2;
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .inquiry-form-intro {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+
+        .inquiry-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 32px;
+        }
+
+        .inquiry-form .field-full {
+            grid-column: 1 / -1;
+        }
+
+        .inquiry-form label {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .inquiry-form input,
+        .inquiry-form select,
+        .inquiry-form textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .inquiry-form input::placeholder,
+        .inquiry-form textarea::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .inquiry-form input:focus,
+        .inquiry-form select:focus,
+        .inquiry-form textarea:focus {
+            outline: none;
+            border-color: #E31B23;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .inquiry-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .inquiry-form select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%23E31B23' d='M6 8L0 0h12z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .inquiry-form .form-submit {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .inquiry-form .form-submit button {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.03em;
+            padding: 16px 40px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+            background: #E31B23;
+            color: #ffffff;
+        }
+
+        .inquiry-form .form-submit button:hover {
+            background: #c8151c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(227, 27, 35, 0.35);
+        }
+
+        .inquiry-form-note {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        /* Honeypot (hidden anti-spam field) */
+        .inquiry-form .hp-field {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            visibility: hidden;
+        }
+
+        @media (max-width: 640px) {
+            .inquiry-form {
+                grid-template-columns: 1fr;
+                padding: 24px;
+            }
+        }
+
+        /* ========================================
            FOOTER
            ======================================== */
         .footer {
@@ -1788,8 +1947,70 @@
         <div class="container">
             <h2 class="section-headline fade-in">Ready to Put AI to Work?</h2>
             <p class="final-cta-sub fade-in">The best time to start was six months ago. The second best time is a 30-minute conversation to figure out exactly what's possible for your business.</p>
-            <a href="https://calendly.com/todd-project-baseline/discovery" class="btn btn-primary fade-in">Book Your Discovery Call</a>
+            <a href="https://calendly.com/todd-project-baseline/15min" class="btn btn-primary fade-in">Book Your Discovery Call</a>
             <p class="final-cta-email fade-in">Or email <a href="mailto:todd@project-baseline.com">todd@project-baseline.com</a> to start the conversation.</p>
+
+            <div class="inquiry-divider fade-in"><span>Prefer to write first?</span></div>
+
+            <div class="inquiry-form-wrap fade-in">
+                <p class="inquiry-form-intro">Tell us about your business and what you're trying to solve. We'll respond within one business day with next steps.</p>
+
+                <form class="inquiry-form" action="https://formsubmit.co/todd@project-baseline.com" method="POST">
+                    <input type="hidden" name="_subject" value="New AI inquiry from ai.project-baseline.com">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_next" value="https://ai.project-baseline.com/?inquiry=received">
+                    <input type="text" name="_honey" class="hp-field" tabindex="-1" autocomplete="off">
+
+                    <div>
+                        <label for="inq-name">Name</label>
+                        <input id="inq-name" type="text" name="name" required placeholder="Your full name">
+                    </div>
+                    <div>
+                        <label for="inq-email">Work Email</label>
+                        <input id="inq-email" type="email" name="email" required placeholder="you@company.com">
+                    </div>
+                    <div>
+                        <label for="inq-company">Company / Org</label>
+                        <input id="inq-company" type="text" name="company" placeholder="Where you work">
+                    </div>
+                    <div>
+                        <label for="inq-role">Your Role</label>
+                        <input id="inq-role" type="text" name="role" placeholder="Title or function">
+                    </div>
+                    <div class="field-full">
+                        <label for="inq-interest">What You're Looking For</label>
+                        <select id="inq-interest" name="interest" required>
+                            <option value="">Select the closest fit</option>
+                            <option value="Custom AI Agents">Custom AI Agents</option>
+                            <option value="Workflow Automation">Workflow Automation</option>
+                            <option value="Fractional CAIO">Fractional CAIO</option>
+                            <option value="AI Readiness Assessment">AI Readiness Assessment</option>
+                            <option value="Political Campaign AI">Political Campaign AI</option>
+                            <option value="Not sure yet">Not sure yet, want to explore</option>
+                        </select>
+                    </div>
+                    <div class="field-full">
+                        <label for="inq-budget">Approximate Budget (optional)</label>
+                        <select id="inq-budget" name="budget">
+                            <option value="">Skip if not sure</option>
+                            <option value="Under $5K">Under $5K</option>
+                            <option value="$5K - $15K">$5K - $15K</option>
+                            <option value="$15K - $50K">$15K - $50K</option>
+                            <option value="$50K+">$50K+</option>
+                            <option value="Retainer / Fractional">Retainer / Fractional</option>
+                        </select>
+                    </div>
+                    <div class="field-full">
+                        <label for="inq-message">What are you trying to solve?</label>
+                        <textarea id="inq-message" name="message" required placeholder="The challenge, what you've tried, what success would look like."></textarea>
+                    </div>
+                    <div class="form-submit">
+                        <button type="submit">Send Inquiry</button>
+                        <p class="inquiry-form-note">No spam. No mailing list. Just a real reply from Todd.</p>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 
