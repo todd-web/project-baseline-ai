@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Implementation Services | Project Baseline</title>
-    <meta name="description" content="Production AI systems for small and mid-market businesses. Custom AI agents, workflow automation, fractional CAIO, political campaign AI, and readiness assessments. Built by someone who runs 110+ AI agents daily.">
-    <meta name="keywords" content="AI implementation, AI consulting, workflow automation, AI agents, fractional CAIO, AI readiness assessment, small business AI, political campaign AI, voter outreach automation">
+    <meta name="description" content="Production AI systems for small and mid-market businesses. Workflow automation, fractional CAIO, political campaign AI, and readiness assessments.">
+    <meta name="keywords" content="AI implementation, AI consulting, workflow automation, fractional CAIO, AI readiness assessment, small business AI, political campaign AI, voter outreach automation">
     <meta property="og:title" content="AI Implementation Services | Project Baseline">
-    <meta property="og:description" content="Production AI systems for small and mid-market businesses. Custom AI agents, workflow automation, fractional CAIO, and readiness assessments.">
+    <meta property="og:description" content="Production AI systems for small and mid-market businesses. Workflow automation, fractional CAIO, and readiness assessments.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.project-baseline.com/ai-services">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -1379,6 +1379,26 @@
             }
         }
 
+        /* Tablet: run both service grids as one two-column flow so the
+           six cards form three full rows (no card alone on a row). */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .services > .container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 28px;
+            }
+
+            .services > .container > .services-header {
+                grid-column: 1 / -1;
+                margin-bottom: 36px;
+            }
+
+            .services > .container > .services-grid,
+            .services > .container > .services-grid-bottom {
+                display: contents;
+            }
+        }
+
         @media (max-width: 768px) {
             .section {
                 padding: 72px 0;
@@ -1967,7 +1987,6 @@
                         <label for="inq-interest">What You're Looking For</label>
                         <select id="inq-interest" name="interest" required>
                             <option value="">Select the closest fit</option>
-                            <option value="Custom AI Agents">Custom AI Agents</option>
                             <option value="Workflow Automation">Workflow Automation</option>
                             <option value="Fractional CAIO">Fractional CAIO</option>
                             <option value="AI Readiness Assessment">AI Readiness Assessment</option>
